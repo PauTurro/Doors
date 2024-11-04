@@ -32,6 +32,39 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
+// Example usage of Firebase functions for authentication
+export function registerUser(email, password) {
+  return createUserWithEmailAndPassword(auth, email, password);
+}
+
+export function loginUser(email, password) {
+  return signInWithEmailAndPassword(auth, email, password);
+}
+
+export function logoutUser() {
+  return signOut(auth);
+}
+
+export function onAuthStateChangedListener(callback) {
+  return onAuthStateChanged(auth, callback);
+}
+
+// Example usage of Firebase Realtime Database functions
+export function writeData(path, data) {
+  const dataRef = ref(db, path);
+  return set(dataRef, data);
+}
+
+export function readData(path) {
+  const dataRef = ref(db, path);
+  return get(dataRef);
+}
+
+export function onDataChangeListener(path, callback) {
+  const dataRef = ref(db, path);
+  return onValue(dataRef, callback);
+}
+
 // DOM elements
 const authSection = document.getElementById('authSection');
 const controlSection = document.getElementById('controlSection');
