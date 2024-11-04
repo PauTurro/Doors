@@ -1,0 +1,145 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Dark Gray Background */
+body, .background {
+    background-color: #161616;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Container */
+.container {
+    text-align: center;
+    padding: 20px;
+}
+
+/* Title */
+.title {
+    font-size: 2.5rem;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+/* Authentication Horizontal Section */
+.auth-horizontal {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Input Fields */
+input[type="email"], input[type="password"] {
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    max-width: 200px;
+    background-color: #d8d8d8; /* White background */
+    color: #121212;            /* Black text */
+}
+
+/* Buttons */
+button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #00bd4c;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.6s ease;
+}
+
+button:hover {
+    background-color: rgb(40, 101, 58);
+}
+
+/* Login Button - Soft Blue */
+.login-btn {
+    background-color: #8a25af;
+}
+
+.login-btn:hover {
+    background-color: #c731c5;
+}
+
+/* Control Section */
+#controlSection {
+    margin-top: 20px;
+}
+
+/* Token Display */
+#tokenDisplay {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+/* Toggle Buttons Container */
+.toggle-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Toggle Buttons */
+.toggle-btn {
+    width: 200px;
+    height: 50px;
+    font-size: 18px;
+    color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 1s ease;
+    background-color: #00bd4c00; /* Default background */
+}
+
+/* Open State */
+.toggle-btn.open {
+    background-color: #a122cf;
+}
+
+/* Closed State */
+.toggle-btn.closed {
+    background-color: #2d2d2d;
+}
+
+/* Logout Button */
+#logoutBtn {
+    margin-top: 50px;
+    width: 150px;
+    height: 40px;
+    font-size: 16px;
+    color: white;
+    background-color: #551010;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .auth-horizontal {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 Door Control PWA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background">
+        <div class="container">
+            <h1 class="title" id="welcomeTitle">Welcome to the future</h1>
+            <div id="authSection" class="auth-horizontal">
+                <input type="email" id="email" placeholder="Email">
+                <input type="password" id="password" placeholder="Password">
+                <button id="registerBtn">Register</button>
+                <button id="loginBtn" class="login-btn">Login</button>
+            </div>
+
+            <div id="controlSection" style="display: none;">
+                <p id="tokenDisplay">Your Token: <span id="token"></span></p>
+                
+                <!-- Toggle Buttons Container -->
+                <div class="toggle-buttons">
+                    <button id="toggleDoor1" class="toggle-btn">Toggle Door 1</button>
+                    <button id="toggleDoor2" class="toggle-btn">Toggle Door 2</button>
+                </div>
+
+                <button id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="./src/app.js"></script>
+</body>
+</html>
