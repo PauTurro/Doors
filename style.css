@@ -242,10 +242,14 @@
     .auth-horizontal {
       flex-direction: column;
     }
-    
-    /* Disable scrolling on phone screens */
+  
+    /* 
+      Allow scrolling on phone screens so the keyboard won't block inputs.
+      Removing or modifying 'overflow: hidden;' is crucial for iOS.
+    */
     html, body {
-      overflow: hidden;
+      overflow-x: hidden; /* hide horizontal scroll */
+      overflow-y: auto;   /* allow vertical scroll */
     }
   }
   
