@@ -336,19 +336,43 @@
 }
 
 
-/* Hide container background and shadows while keeping content visible */
+/* Make container invisible and remove shadows on mobile screens */
 @media screen and (max-width: 768px) {
-  .container {
-      background-color: transparent !important; /* Remove background */
-      box-shadow: none !important; /* Remove shadows */
-      border: none !important; /* Remove borders */
-      visibility: visible !important; /* Ensure container itself is visible */
-      opacity: 1 !important; /* Fully visible */
-  }
+    .container {
+        visibility: hidden !important; /* Hide the container */
+        box-shadow: none !important; /* Remove any shadows */
+        background-color: transparent !important; /* Make background transparent */
+    }
+}
 
-  /* Override for child elements to ensure visibility */
-  .container * {
-      visibility: visible !important;
-      opacity: 1 !important;
-  }
+
+/* Strictly make container invisible and remove shadows on mobile screens */
+@media screen and (max-width: 768px) {
+    .container {
+        visibility: hidden !important; /* Hide the container */
+        opacity: 0 !important; /* Fully transparent */
+        height: 0 !important; /* Collapse container height */
+        width: 0 !important; /* Collapse container width */
+        box-shadow: none !important; /* Remove shadows */
+        background-color: transparent !important; /* Ensure no background */
+    }
+}
+
+
+/* Make login elements bigger on mobile screens */
+@media screen and (max-width: 768px) {
+    .container h1, /* Assuming the title is in an <h1> tag */
+    .container .title {
+        font-size: 2rem !important; /* Larger title font size */
+    }
+
+    .container input, /* Inputs inside the container */
+    .container button {
+        font-size: 1.5rem !important; /* Larger input and button text */
+        padding: 1rem !important; /* Increase padding for better touch targets */
+    }
+
+    .container button {
+        width: 100% !important; /* Ensure buttons are full-width for better usability */
+    }
 }
