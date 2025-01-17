@@ -34,11 +34,6 @@
     min-height: 100vh;
   }
   
-  /*
-    If you still want a dedicated .background wrapper,
-    give it flex styling to center contents vertically/horizontally
-    BUT ensure we don't force 100vh again if not desired.
-  */
   .background {
     /* Expand to fill remaining vertical space */
     flex: 1;
@@ -56,11 +51,10 @@
      3. Container
      =========================== */
   .container {
-    /* Center horizontally if the parent is a normal block or flex container */
     margin: 0 auto;
     text-align: center;
   
-    /* Keep your exact 900px width as requested */
+    /* Keep your exact 900px width as requested for larger screens */
     width: 900px;
   
     padding: 50px;
@@ -246,6 +240,21 @@
     /* Disable scrolling on phone screens */
     html, body {
       overflow: hidden;
+    }
+  
+    /* 
+      Hide the "container look" on phones:
+      - Remove background color
+      - Remove box-shadow, border-radius
+      - Make the container fill the screen width
+    */
+    .container {
+      background-color: transparent !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
     }
   }
   
