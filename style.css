@@ -353,8 +353,6 @@
 }
 
 
-
-
 /* Make login elements bigger on mobile screens */
 @media screen and (max-width: 768px) {
   .container h1, /* Assuming the title is in an <h1> tag */
