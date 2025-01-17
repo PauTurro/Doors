@@ -1,145 +1,274 @@
-/* Basic Reset */
-* {
+/* ===========================
+   1. Basic Reset
+   =========================== */
+   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
-
-/* Dark Gray Background */
-body, .background {
-    background-color: #161616;
-    color: #ffffff;
+    
+    /* Use Nunito for the entire site */
+    font-family: "Nunito", sans-serif;
+    font-weight: 400; /* default weight for normal text */
+  }
+  
+  /* ===========================
+     2. Body and Background
+     =========================== */
+  body,
+  .background {
+    background-color: var(--app-bg-color, #fffdf2);
+    color: var(--app-text-color, #5e4a4a);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
-}
-
-/* Container */
-.container {
+  }
+  
+  /* ===========================
+     3. Container
+     =========================== */
+  .container {
     text-align: center;
-    padding: 20px;
-}
-
-/* Title */
-.title {
-    font-size: 2.5rem;
-    color: #ffffff;
-    margin-bottom: 20px;
-}
-
-/* Authentication Horizontal Section */
-.auth-horizontal {
+    padding: 50px;
+    background-color: var(--container-bg-color, #ffffff00);
+    border-radius: var(--container-border-radius, 30px);
+    box-shadow: 20px 20px 200px rgba(240, 194, 8, 0.539);
+    max-width: max-width 700px;
+    width: 900px;
+  }
+  
+  /* ===========================
+     4. Title
+     =========================== */
+  .title {
+    font-weight: 700;
+    font-size: var(--title-font-size, 2rem);
+    color: var(--title-color, #785b31);
+    margin-bottom: 30px;
+  }
+  
+  /* ===========================
+     5. Authentication Horizontal Section
+     =========================== */
+  .auth-horizontal {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 10px;
     justify-content: center;
     margin-top: 20px;
-}
-
-/* Input Fields */
-input[type="email"], input[type="password"] {
-    padding: 10px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 5px;
-    max-width: 200px;
-    background-color: #d8d8d8; /* White background */
-    color: #121212;            /* Black text */
-}
-
-/* Buttons */
-button {
-    padding: 10px 15px;
-    font-size: 1rem;
-    color: #ffffff;
-    background-color: #00bd4c;
-    border: none;
-    border-radius: 5px;
+  }
+  
+  /* ===========================
+     6. Input Fields
+     =========================== */
+  input[type="email"],
+  input[type="password"] {
+    padding: var(--input-padding, 12px);
+    font-size: var(--input-font-size, 1rem);
+    font-weight: 680;
+    
+    border: var(--input-border, 2px solid #ffe87f);
+    border-radius: var(--input-border-radius, 14px);
+    max-width: var(--input-max-width, 500px);
+    background-color: var(--input-bg-color, #fffdf2);
+    color: var(--input-text-color, #785b31);
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  input[type="email"]:focus,
+  input[type="password"]:focus {
+    border-color: var(--input-focus-border, #ffcf3f );
+  }
+  
+  /* ===========================
+     7. Buttons
+     =========================== */
+  button {
+    padding: var(--button-padding, 10px 15px);
+    font-size: var(--button-font-size, 1rem);
+    font-weight: 650;
+  
+    color: var(--button-text-color, #ffffff);
+    background-color: var(--button-bg-color, #f9c836);
+    border: var(--button-border, none);
+    border-radius: var(--button-border-radius, 17px);
     cursor: pointer;
-    transition: background-color 0.6s ease;
-}
-
-button:hover {
-    background-color: rgb(40, 101, 58);
-}
-
-/* Login Button - Soft Blue */
-.login-btn {
-    background-color: #8a25af;
-}
-
-.login-btn:hover {
-    background-color: #c731c5;
-}
-
-/* Control Section */
-#controlSection {
+    transition: background-color 0.45s ease, transform 0.2s ease;
+  }
+  
+  button:hover {
+    background-color: var(--button-hover-bg-color, #785b31);
+  }
+  
+  button:active {
+    transform: scale(1);
+  }
+  
+  /* ===========================
+     8. Login Button
+     =========================== */
+  .login-btn {
+    background-color: var(--login-button-bg-color, #f9c836);
+  }
+  
+  .login-btn:hover {
+    background-color: var(--login-button-hover-bg-color, #785b31);
+  }
+  
+  /* ===========================
+     9. Control Section
+     =========================== */
+  #controlSection {
     margin-top: 20px;
-}
-
-/* Token Display */
-#tokenDisplay {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #ffffff;
+  }
+  
+  /* ===========================
+     10. Token Display
+     =========================== */
+  #tokenDisplay {
+    font-size: var(--token-font-size, 2.5rem);
+    font-weight: 700;
+    color: var(--token-color, #8e6c3b);
     margin-bottom: 20px;
-}
-
-/* Toggle Buttons Container */
-.toggle-buttons {
+  }
+  
+  /* ===========================
+     11. Toggle Buttons Container
+     =========================== */
+  .toggle-buttons {
     display: flex;
     flex-direction: column;
     gap: 15px;
     align-items: center;
     margin-top: 20px;
-}
-
-/* Toggle Buttons */
-.toggle-btn {
-    width: 200px;
-    height: 50px;
-    font-size: 18px;
-    color: rgb(255, 255, 255);
+  }
+  
+  /* ===========================
+     12. Toggle Buttons
+     =========================== */
+  .toggle-btn {
+    width: var(--toggle-button-width, 200px);
+    height: var(--toggle-button-height, 50px);
+    font-size: var(--toggle-button-font-size, 18px);
+    font-weight: 600;
+  
+    color: var(--toggle-button-text-color, #ffffff);
     border: none;
-    border-radius: 5px;
+    border-radius: var(--toggle-button-border-radius, 20px);
     cursor: pointer;
-    transition: background-color 1s ease;
-    background-color: #00bd4c00; /* Default background */
-}
-
-/* Open State */
-.toggle-btn.open {
-    background-color: #a122cf;
-}
-
-/* Closed State */
-.toggle-btn.closed {
-    background-color: #2d2d2d;
-}
-
-/* Logout Button */
-#logoutBtn {
+    transition: background-color 1s ease, transform 0.2s ease;
+    background-color: var(--toggle-button-bg-color, rgba(255, 207, 95, 0.7));
+  }
+  
+  .toggle-btn.open {
+    background-color: var(--toggle-open-bg-color, #ffd84d);
+  }
+  
+  .toggle-btn.closed {
+    background-color: var(--toggle-closed-bg-color, #b1a494);
+  }
+  
+  .toggle-btn:hover {
+    transform: translateY(-2px);
+  }
+  
+  /* ===========================
+     13. Logout Button
+     =========================== */
+  #logoutBtn {
     margin-top: 50px;
-    width: 150px;
-    height: 40px;
-    font-size: 16px;
-    color: white;
-    background-color: #551010;
+    width: var(--logout-button-width, 150px);
+    height: var(--logout-button-height, 40px);
+    font-size: var(--logout-button-font-size, 16px);
+    font-weight: 600;
+  
+    color: var(--logout-button-text-color, #ffffff);
+    background-color: var(--logout-button-bg-color, #eda655);
     border: none;
-    border-radius: 5px;
+    border-radius: var(--logout-button-border-radius, 20px);
     cursor: pointer;
     display: block;
     margin-left: auto;
     margin-right: auto;
-}
-
-/* Responsive Design */
-@media (max-width: 600px) {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  #logoutBtn:hover {
+    background-color: var(--logout-button-hover-bg-color, #ff9f1b);
+  }
+  
+  #logoutBtn:active {
+    transform: scale(0.98);
+  }
+  
+  /* ===========================
+     14. Responsive Design
+     =========================== */
+  @media (max-width: 600px) {
     .auth-horizontal {
-        flex-direction: column;
+      flex-direction: column;
     }
-}
+  }
+  
+  /* -----------------------------------
+     F A D E   A N I M A T I O N   S E C T I O N
+     ----------------------------------- */
+  
+  /* 1. Fade-in keyframes for the title (faster) */
+  @keyframes fadeInTitle {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* 2. Fade-in keyframes for inputs and buttons (slower) */
+  @keyframes fadeInSlower {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* 3. Apply the animation to the title */
+  .title {
+    animation: fadeInTitle 2.5s ease forwards;
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  
+  /* 4. Apply slower fade to input boxes and buttons */
+  .auth-horizontal input[type="email"],
+  .auth-horizontal input[type="password"],
+  .auth-horizontal button,
+  .register-btn {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInSlower 1s ease forwards;
+  }
+  
+  /* ==============================================
+     5. Autofill Fix for Chrome, Safari, and others
+     ============================================== */
+  
+  /* Target the autofill background and text */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-text-fill-color: #785b31 !important;
+    -webkit-box-shadow: 0 0 0 30px #fffdf2 inset !important;
+    box-shadow: 0 0 0 30px #fffdf2 inset !important; /* Fallback for some browsers */
+    transition: background-color 5000s ease-in-out 0s;
+  }
+  
