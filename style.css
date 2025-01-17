@@ -334,3 +334,13 @@
         z-index: 1000; /* Bring to front */
     }
 }
+
+
+/* Make container invisible and remove shadows on mobile screens */
+@media screen and (max-width: 768px) {
+    .container {
+        visibility: hidden !important; /* Hide the container */
+        box-shadow: none !important; /* Remove any shadows */
+        background-color: transparent !important; /* Make background transparent */
+    }
+}
