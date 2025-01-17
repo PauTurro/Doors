@@ -307,9 +307,8 @@
     transition: background-color 5000s ease-in-out 0s;
   }
   
-
-/* Home screen version: Make the container invisible but keep the shadow */
+/* Home screen version: Make the container invisible but show shadow and yellow glow */
 .container {
     background-color: transparent; /* Makes the container invisible */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Keeps the shadow visible */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 0 15px rgba(255, 223, 0, 0.8); /* Adds yellow glow */
 }
