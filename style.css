@@ -307,3 +307,15 @@
     transition: background-color 5000s ease-in-out 0s;
   }
   
+
+/* Style for mobile screens */
+@media screen and (max-width: 768px) {
+    .container {
+        position: fixed; /* Keeps the container fixed */
+        top: 0; /* Aligns it to the top of the screen */
+        left: 0;
+        right: 0;
+        margin: 0; /* Removes any margin */
+        width: 100%; /* Ensures full width */
+    }
+}
