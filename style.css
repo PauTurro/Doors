@@ -5,7 +5,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    
+  
     /* Use Nunito for the entire site */
     font-family: "Nunito", sans-serif;
     font-weight: 400; /* default weight for normal text */
@@ -18,7 +18,7 @@
   */
   html, body {
     touch-action: pan-x pan-y; 
-    /* Remove default body margin/padding so background can be full screen. */
+    /* Remove default body margin/padding */
     margin: 0;
     padding: 0;
   }
@@ -44,7 +44,7 @@
     /* Same background so it blends seamlessly */
     background-color: var(--app-bg-color, #fffdf2);
     width: 100%;
-    min-height: 100vh; /* optional, if you want it to always fill height */
+    min-height: 100vh; /* optional, if you want it always full-height */
   }
   
   /* ===========================
@@ -54,7 +54,7 @@
     margin: 0 auto;
     text-align: center;
   
-    /* Keep your exact 900px width as requested for larger screens */
+    /* Keep your exact 900px width for large screens */
     width: 900px;
   
     padding: 50px;
@@ -236,21 +236,25 @@
     .auth-horizontal {
       flex-direction: column;
     }
-    
-    /* Disable scrolling on phone screens */
+  
+    /* 
+      Allow scrolling on phone screens so keyboard input works 
+      (removing "overflow: hidden" from earlier).
+    */
     html, body {
-      overflow: hidden;
+      overflow-x: hidden; /* we don't want horizontal scroll on small screens */
+      overflow-y: auto;   /* allow vertical scroll to type in inputs */
     }
   
     /* 
-      Hide the "container look" on phones:
-      - Remove background color
-      - Remove box-shadow, border-radius
-      - Make the container fill the screen width
+      Hide the "container" background color on phones:
+      - Keep or remove the box-shadow as needed
     */
     .container {
       background-color: transparent !important;
-      box-shadow: none !important;
+      /* If you want the shadow hidden, uncomment:
+         box-shadow: none !important;
+      */
       border-radius: 0 !important;
       width: 100% !important;
       padding: 0 !important;
