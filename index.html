@@ -3,17 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   
-  <!-- Viewport: if you still have issues, remove user-scalable=no -->
+  <!-- 
+    Viewport: 
+    - Removed user-scalable=no 
+    - This allows iOS to show the keyboard properly in some cases 
+  -->
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0,
-             minimum-scale=1.0, maximum-scale=1.0,
+             minimum-scale=1.0, maximum-scale=1.0"
   />
 
-  <!-- Android/Chrome: White toolbar/status bar -->
+  <!-- Android/Chrome: Make toolbar/status bar white -->
   <meta name="theme-color" content="#FFFFFF" />
 
-  <!-- iOS PWA: standalone mode, white/light status bar -->
+  <!-- iOS PWA: Enable standalone mode and set status bar to 'default' (white/light style) -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
@@ -34,19 +38,13 @@
   <link rel="manifest" href="manifest.json" />
 
   <!-- 
-    Remove or comment out ANY script that prevents gesturestart/change/end on iOS.
-    That's what breaks the keyboard in standalone PWAs.
-    
-    If you MUST disable pinch-zoom on non-iOS devices, 
-    you can do so conditionally in JavaScript. 
-    But do NOT do it on iOS, or the keyboard won't appear. 
+    Removed the iOS gesture event prevention. 
+    That code used to block the keyboard on iOS PWAs. 
   -->
-  <!-- <script>
-    // *** COMMENTED OUT (or removed) *** 
-    // document.addEventListener('gesturestart', e => e.preventDefault(), { passive: false });
-    // document.addEventListener('gesturechange', e => e.preventDefault(), { passive: false });
-    // document.addEventListener('gestureend', e => e.preventDefault(), { passive: false });
-  </script> -->
+  
+  <!-- If you still want to prevent pinch-zoom on non-iOS, 
+       do a user-agent check in a separate script, 
+       but never block gesture events on iOS if you need text input. -->
 </head>
 <body>
   <div class="background">
@@ -67,12 +65,10 @@
         <p id="tokenDisplay">
           Your Token: <span id="token"></span>
         </p>
-
         <div class="toggle-buttons">
           <button id="toggleDoor1" class="toggle-btn">Toggle Door 1</button>
           <button id="toggleDoor2" class="toggle-btn">Toggle Door 2</button>
         </div>
-
         <button id="logoutBtn">Logout</button>
       </div>
     </div>
@@ -103,7 +99,7 @@
 
     // 2. Firebase configuration (Use your real credentials)
     const firebaseConfig = {
-      apiKey: "YOUR-API-KEY",
+      apiKey: "AIzaSyDWM...",
       authDomain: "esp32door-control.firebaseapp.com",
       databaseURL: "https://esp32door-control-default-rtdb.firebaseio.com/",
       projectId: "esp32door-control",
@@ -133,7 +129,6 @@
     const tokenDisplay    = document.getElementById("token");
     const welcomeTitle    = document.getElementById("welcomeTitle");
 
-    // Variable to store the device token
     let deviceToken = "";
 
     /************************************************
@@ -250,7 +245,6 @@
       }
     }
 
-    // Helper for attaching onValue listeners to door statuses
     function listenToDoorStatus(buttonElement, doorStatusKey) {
       const doorStatusRef = ref(db, "devices/" + deviceToken + "/" + doorStatusKey);
       onValue(doorStatusRef, (snapshot) => {
@@ -319,19 +313,16 @@
     onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log("User is logged in:", user.uid);
-        // Hide login, show control screen
         authSection.style.display = "none";
         controlSection.style.display = "block";
         welcomeTitle.style.display = "none";
 
-        // Generate/check device token, then update doors
         checkAndGenerateToken().then(() => {
           updateToggleButtons();
           listenToDoorStatuses();
         });
       } else {
         console.log("User is not logged in.");
-        // Show login, hide control screen
         authSection.style.display = "flex";
         controlSection.style.display = "none";
         welcomeTitle.style.display = "block";
