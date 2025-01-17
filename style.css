@@ -336,14 +336,16 @@
 }
 
 
-/* Make container invisible and remove shadows on mobile screens */
+/* Hide container background and shadows while keeping content visible */
 @media screen and (max-width: 768px) {
   .container {
-      visibility: hidden !important; /* Hide the container */
-      opacity: 0 !important; /* Fully transparent */
-      height: 0 !important; /* Collapse container height */
-      width: 0 !important; /* Collapse container width */
+      background-color: transparent !important; /* Remove background */
       box-shadow: none !important; /* Remove shadows */
-      background-color: transparent !important; /* Ensure no background */
+      border: none !important; /* Remove any borders */
+  }
+
+  .container * {
+      visibility: visible !important; /* Ensure child elements are visible */
+      opacity: 1 !important; /* Fully visible content */
   }
 }
