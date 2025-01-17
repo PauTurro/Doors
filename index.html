@@ -4,12 +4,7 @@
   <meta charset="UTF-8" />
   
   <!-- Disallows pinch-to-zoom -->
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0,
-             minimum-scale=1.0, maximum-scale=1.0,
-             user-scalable=no"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 
   <!-- Android/Chrome: Make toolbar/status bar white -->
   <meta name="theme-color" content="#FFFFFF" />
@@ -66,16 +61,28 @@
 
   <!-- iOS Safari pinch-zoom workaround: prevent gesturestart/change/end -->
   <script>
-    document.addEventListener('gesturestart', function (e) {
-      e.preventDefault();
+    
+document.addEventListener('gesturestart', function (e) {
+    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+
+              e.preventDefault();
+    }
     }, { passive: false });
 
-    document.addEventListener('gesturechange', function (e) {
-      e.preventDefault();
+    
+document.addEventListener('gesturechange', function (e) {
+    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+
+              e.preventDefault();
+    }
     }, { passive: false });
 
-    document.addEventListener('gestureend', function (e) {
-      e.preventDefault();
+    
+document.addEventListener('gestureend', function (e) {
+    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+
+              e.preventDefault();
+    }
     }, { passive: false });
   </script>
 </head>
