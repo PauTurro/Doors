@@ -33,7 +33,8 @@
     background-color: var(--container-bg-color, #ffffff00);
     border-radius: var(--container-border-radius, 30px);
     box-shadow: 20px 20px 200px rgba(240, 194, 8, 0.539);
-    max-width: max-width 700px;
+    
+    /* Keep it exactly as it was: 900px width, no max-width override */
     width: 900px;
   }
   
@@ -79,7 +80,7 @@
   
   input[type="email"]:focus,
   input[type="password"]:focus {
-    border-color: var(--input-focus-border, #ffcf3f );
+    border-color: var(--input-focus-border, #ffcf3f);
   }
   
   /* ===========================
@@ -210,6 +211,11 @@
     .auth-horizontal {
       flex-direction: column;
     }
+    
+    /* Disable scrolling on phone screens */
+    html, body {
+      overflow: hidden;
+    }
   }
   
   /* -----------------------------------
@@ -260,15 +266,13 @@
   /* ==============================================
      5. Autofill Fix for Chrome, Safari, and others
      ============================================== */
-  
-  /* Target the autofill background and text */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active {
     -webkit-text-fill-color: #785b31 !important;
     -webkit-box-shadow: 0 0 0 30px #fffdf2 inset !important;
-    box-shadow: 0 0 0 30px #fffdf2 inset !important; /* Fallback for some browsers */
+    box-shadow: 0 0 0 30px #fffdf2 inset !important; /* fallback for some browsers */
     transition: background-color 5000s ease-in-out 0s;
   }
   
