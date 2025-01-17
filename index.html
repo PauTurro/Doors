@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   
-  <!-- Disallows pinch-to-zoom -->
+  <!-- Viewport: if you still have issues, remove user-scalable=no -->
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0,
@@ -11,10 +11,10 @@
              user-scalable=no"
   />
 
-  <!-- Android/Chrome: Make toolbar/status bar white -->
+  <!-- Android/Chrome: White toolbar/status bar -->
   <meta name="theme-color" content="#FFFFFF" />
 
-  <!-- iOS PWA: Enable standalone mode and set status bar to 'default' (white/light style) -->
+  <!-- iOS PWA: standalone mode, white/light status bar -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
@@ -34,50 +34,20 @@
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json" />
 
-  <!-- Optional CSS to help block pinch-zoom on modern browsers (Android/Chrome) -->
-  <style>
-    /* 
-      This allows normal scrolling (pan-x pan-y) but blocks pinch gestures 
-      in many browsers.
-    */
-    html, body {
-      touch-action: pan-x pan-y;
-      margin: 0;           /* Remove default margin so body can reach top edge */
-      background-color: #FFF; /* Make background white to match status bar */
-      color: #000;         /* Example text color */
-      
-      /* Safe area for iOS notch/rounded corners */
-      padding-top: env(safe-area-inset-top);
-      padding-left: env(safe-area-inset-left);
-      padding-right: env(safe-area-inset-right);
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-
-    /* Fallback for older iOS versions that used 'constant()' instead of 'env()' */
-    @supports(padding: max(0px)) {
-      body {
-        padding-top: constant(safe-area-inset-top);
-        padding-left: constant(safe-area-inset-left);
-        padding-right: constant(safe-area-inset-right);
-        padding-bottom: constant(safe-area-inset-bottom);
-      }
-    }
-  </style>
-
-  <!-- iOS Safari pinch-zoom workaround: prevent gesturestart/change/end -->
-  <script>
-    document.addEventListener('gesturestart', function (e) {
-      e.preventDefault();
-    }, { passive: false });
-
-    document.addEventListener('gesturechange', function (e) {
-      e.preventDefault();
-    }, { passive: false });
-
-    document.addEventListener('gestureend', function (e) {
-      e.preventDefault();
-    }, { passive: false });
-  </script>
+  <!-- 
+    Remove or comment out ANY script that prevents gesturestart/change/end on iOS.
+    That's what breaks the keyboard in standalone PWAs.
+    
+    If you MUST disable pinch-zoom on non-iOS devices, 
+    you can do so conditionally in JavaScript. 
+    But do NOT do it on iOS, or the keyboard won't appear. 
+  -->
+  <!-- <script>
+    // *** COMMENTED OUT (or removed) *** 
+    // document.addEventListener('gesturestart', e => e.preventDefault(), { passive: false });
+    // document.addEventListener('gesturechange', e => e.preventDefault(), { passive: false });
+    // document.addEventListener('gestureend', e => e.preventDefault(), { passive: false });
+  </script> -->
 </head>
 <body>
   <div class="background">
@@ -134,7 +104,7 @@
 
     // 2. Firebase configuration (Use your real credentials)
     const firebaseConfig = {
-      apiKey: "AIzaSyDWMkL3P7OWlosSFXXRg8gvUQg6-7Y9uu8",
+      apiKey: "YOUR-API-KEY",
       authDomain: "esp32door-control.firebaseapp.com",
       databaseURL: "https://esp32door-control-default-rtdb.firebaseio.com/",
       projectId: "esp32door-control",
