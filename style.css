@@ -5,47 +5,64 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    
+    /* Use Nunito for the entire site */
     font-family: "Nunito", sans-serif;
-    font-weight: 400;
+    font-weight: 400; /* default weight for normal text */
   }
   
   /* 
-    IMPORTANT: Remove touch-action from html/body to fix iOS keyboard issues 
-               in standalone mode.
+    Add a default "touch-action" rule to block pinch gestures 
+    in modern browsers (esp. Android/Chrome). 
+    We keep scrolling (pan-x, pan-y), but remove pinch gestures.
   */
   html, body {
-    /* touch-action: pan-x pan-y;  <-- Remove or comment out */
+    touch-action: pan-x pan-y; 
+    /* Remove default body margin/padding so background can be full screen. */
     margin: 0;
     padding: 0;
   }
   
   /* ===========================
-     2. Body & .background
+     2. Body and Background
      =========================== */
   body {
+    /* Full screen background color */
     background-color: var(--app-bg-color, #fffdf2);
     color: var(--app-text-color, #5e4a4a);
     width: 100%;
     min-height: 100vh;
   }
   
+  /*
+    If you still want a dedicated .background wrapper,
+    give it flex styling to center contents vertically/horizontally
+    BUT ensure we don't force 100vh again if not desired.
+  */
   .background {
+    /* Expand to fill remaining vertical space */
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
+  
+    /* Same background so it blends seamlessly */
     background-color: var(--app-bg-color, #fffdf2);
     width: 100%;
-    min-height: 100vh;
+    min-height: 100vh; /* optional, if you want it to always fill height */
   }
   
   /* ===========================
      3. Container
      =========================== */
   .container {
+    /* Center horizontally if the parent is a normal block or flex container */
     margin: 0 auto;
     text-align: center;
-    width: 900px; /* your fixed width on desktop */
+  
+    /* Keep your exact 900px width as requested */
+    width: 900px;
+  
     padding: 50px;
     background-color: var(--container-bg-color, #ffffff00);
     border-radius: var(--container-border-radius, 30px);
@@ -63,7 +80,7 @@
   }
   
   /* ===========================
-     5. Auth Section
+     5. Authentication Horizontal Section
      =========================== */
   .auth-horizontal {
     display: flex;
@@ -79,69 +96,78 @@
      =========================== */
   input[type="email"],
   input[type="password"] {
-    padding: 12px;
-    font-size: 1rem;
+    padding: var(--input-padding, 12px);
+    font-size: var(--input-font-size, 1rem);
     font-weight: 680;
-    border: 2px solid #ffe87f;
-    border-radius: 14px;
-    max-width: 500px;
-    background-color: #fffdf2;
-    color: #785b31;
+    
+    border: var(--input-border, 2px solid #ffe87f);
+    border-radius: var(--input-border-radius, 14px);
+    max-width: var(--input-max-width, 500px);
+    background-color: var(--input-bg-color, #fffdf2);
+    color: var(--input-text-color, #785b31);
     outline: none;
     transition: border-color 0.3s ease;
   }
   
   input[type="email"]:focus,
   input[type="password"]:focus {
-    border-color: #ffcf3f;
+    border-color: var(--input-focus-border, #ffcf3f);
   }
   
   /* ===========================
      7. Buttons
      =========================== */
   button {
-    padding: 10px 15px;
-    font-size: 1rem;
+    padding: var(--button-padding, 10px 15px);
+    font-size: var(--button-font-size, 1rem);
     font-weight: 650;
-    color: #ffffff;
-    background-color: #f9c836;
-    border: none;
-    border-radius: 17px;
+  
+    color: var(--button-text-color, #ffffff);
+    background-color: var(--button-bg-color, #f9c836);
+    border: var(--button-border, none);
+    border-radius: var(--button-border-radius, 17px);
     cursor: pointer;
     transition: background-color 0.45s ease, transform 0.2s ease;
   }
   
   button:hover {
-    background-color: #785b31;
+    background-color: var(--button-hover-bg-color, #785b31);
   }
   
   button:active {
     transform: scale(1);
   }
   
+  /* ===========================
+     8. Login Button
+     =========================== */
   .login-btn {
-    background-color: #f9c836;
+    background-color: var(--login-button-bg-color, #f9c836);
+  }
+  
+  .login-btn:hover {
+    background-color: var(--login-button-hover-bg-color, #785b31);
   }
   
   /* ===========================
-     8. Control Section
+     9. Control Section
      =========================== */
   #controlSection {
     margin-top: 20px;
   }
   
   /* ===========================
-     9. Token Display
+     10. Token Display
      =========================== */
   #tokenDisplay {
-    font-size: 2.5rem;
+    font-size: var(--token-font-size, 2.5rem);
     font-weight: 700;
-    color: #8e6c3b;
+    color: var(--token-color, #8e6c3b);
     margin-bottom: 20px;
   }
   
   /* ===========================
-     10. Toggle Buttons
+     11. Toggle Buttons Container
      =========================== */
   .toggle-buttons {
     display: flex;
@@ -151,25 +177,29 @@
     margin-top: 20px;
   }
   
+  /* ===========================
+     12. Toggle Buttons
+     =========================== */
   .toggle-btn {
-    width: 200px;
-    height: 50px;
-    font-size: 18px;
+    width: var(--toggle-button-width, 200px);
+    height: var(--toggle-button-height, 50px);
+    font-size: var(--toggle-button-font-size, 18px);
     font-weight: 600;
-    color: #ffffff;
+  
+    color: var(--toggle-button-text-color, #ffffff);
     border: none;
-    border-radius: 20px;
+    border-radius: var(--toggle-button-border-radius, 20px);
     cursor: pointer;
     transition: background-color 1s ease, transform 0.2s ease;
-    background-color: rgba(255, 207, 95, 0.7);
+    background-color: var(--toggle-button-bg-color, rgba(255, 207, 95, 0.7));
   }
   
   .toggle-btn.open {
-    background-color: #ffd84d;
+    background-color: var(--toggle-open-bg-color, #ffd84d);
   }
   
   .toggle-btn.closed {
-    background-color: #b1a494;
+    background-color: var(--toggle-closed-bg-color, #b1a494);
   }
   
   .toggle-btn:hover {
@@ -177,18 +207,19 @@
   }
   
   /* ===========================
-     11. Logout Button
+     13. Logout Button
      =========================== */
   #logoutBtn {
     margin-top: 50px;
-    width: 150px;
-    height: 40px;
-    font-size: 16px;
+    width: var(--logout-button-width, 150px);
+    height: var(--logout-button-height, 40px);
+    font-size: var(--logout-button-font-size, 16px);
     font-weight: 600;
-    color: #ffffff;
-    background-color: #eda655;
+  
+    color: var(--logout-button-text-color, #ffffff);
+    background-color: var(--logout-button-bg-color, #eda655);
     border: none;
-    border-radius: 20px;
+    border-radius: var(--logout-button-border-radius, 20px);
     cursor: pointer;
     display: block;
     margin-left: auto;
@@ -197,7 +228,7 @@
   }
   
   #logoutBtn:hover {
-    background-color: #ff9f1b;
+    background-color: var(--logout-button-hover-bg-color, #ff9f1b);
   }
   
   #logoutBtn:active {
@@ -205,41 +236,55 @@
   }
   
   /* ===========================
-     12. Responsive
+     14. Responsive Design
      =========================== */
   @media (max-width: 600px) {
     .auth-horizontal {
       flex-direction: column;
     }
-  
-    /*
-      Crucial: allow vertical scrolling so iOS keyboard can appear in standalone
-    */
+    
+    /* Disable scrolling on phone screens */
     html, body {
-      overflow-x: hidden;
-      overflow-y: auto;
+      overflow: hidden;
     }
   }
   
   /* -----------------------------------
      F A D E   A N I M A T I O N   S E C T I O N
      ----------------------------------- */
+  
+  /* 1. Fade-in keyframes for the title (faster) */
   @keyframes fadeInTitle {
-    0%   { opacity: 0; transform: translateY(-10px);}
-    100% { opacity: 1; transform: translateY(0);}
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   
+  /* 2. Fade-in keyframes for inputs and buttons (slower) */
   @keyframes fadeInSlower {
-    0%   { opacity: 0; transform: translateY(10px);}
-    100% { opacity: 1; transform: translateY(0);}
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   
+  /* 3. Apply the animation to the title */
   .title {
     animation: fadeInTitle 2.5s ease forwards;
     opacity: 0;
     transform: translateY(-10px);
   }
   
+  /* 4. Apply slower fade to input boxes and buttons */
   .auth-horizontal input[type="email"],
   .auth-horizontal input[type="password"],
   .auth-horizontal button,
@@ -249,14 +294,16 @@
     animation: fadeInSlower 1s ease forwards;
   }
   
-  /* Autofill fix */
+  /* ==============================================
+     5. Autofill Fix for Chrome, Safari, and others
+     ============================================== */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active {
     -webkit-text-fill-color: #785b31 !important;
     -webkit-box-shadow: 0 0 0 30px #fffdf2 inset !important;
-    box-shadow: 0 0 0 30px #fffdf2 inset !important;
+    box-shadow: 0 0 0 30px #fffdf2 inset !important; /* fallback */
     transition: background-color 5000s ease-in-out 0s;
   }
   

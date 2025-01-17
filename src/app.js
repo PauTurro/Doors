@@ -1,42 +1,41 @@
 // ----------------------------------------
-// 1. Optionally Prevent Pinch-Zoom on Non-iOS Devices
+// 1. Prevent iOS pinch-zoom via JS (Optional)
 // ----------------------------------------
-/*
-   If you REALLY want to disable pinch-zoom on Android/Chrome only,
-   you can do something like:
+document.addEventListener('gesturestart', function (e) {
+  e.preventDefault();
+}, { passive: false });
+document.addEventListener('gesturechange', function (e) {
+  e.preventDefault();
+}, { passive: false });
+document.addEventListener('gestureend', function (e) {
+  e.preventDefault();
+}, { passive: false });
 
-const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-if (!isIOS) {
-  document.addEventListener('gesturestart', (e) => e.preventDefault(), { passive: false });
-  document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
-  document.addEventListener('gestureend', (e) => e.preventDefault(), { passive: false });
-}
-
-   But if you do it on iOS, text input will break. So it's commented out here.
-*/
 
 // ----------------------------------------
 // 2. Firebase Imports & Initialization
 // ----------------------------------------
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+
+// Import necessary Firebase modules
+import { initializeApp } from "firebase/app";
 import {
   getAuth,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut
-} from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+} from "firebase/auth";
 import {
   getDatabase,
   ref,
   set,
   get,
   onValue
-} from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+} from "firebase/database";
 
-// Your Firebase config
+// Firebase configuration with your credentials
 const firebaseConfig = {
-  apiKey: "AIzaSyDWMkL3P7OW...",
+  apiKey: "AIzaSyDWMkL3P7OWlosSFXXRg8gvUQg6-7Y9uu8",
   authDomain: "esp32door-control.firebaseapp.com",
   databaseURL: "https://esp32door-control-default-rtdb.firebaseio.com/",
   projectId: "esp32door-control",
@@ -52,7 +51,41 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 
 // ----------------------------------------
-// 3. DOM References
+// 3. Firebase Auth & DB Helper Functions
+// ----------------------------------------
+export function registerUser(email, password) {
+  return createUserWithEmailAndPassword(auth, email, password);
+}
+
+export function loginUser(email, password) {
+  return signInWithEmailAndPassword(auth, email, password);
+}
+
+export function logoutUser() {
+  return signOut(auth);
+}
+
+export function onAuthStateChangedListener(callback) {
+  return onAuthStateChanged(auth, callback);
+}
+
+export function writeData(path, data) {
+  const dataRef = ref(db, path);
+  return set(dataRef, data);
+}
+
+export function readData(path) {
+  const dataRef = ref(db, path);
+  return get(dataRef);
+}
+
+export function onDataChangeListener(path, callback) {
+  const dataRef = ref(db, path);
+  return onValue(dataRef, callback);
+}
+
+// ----------------------------------------
+// 4. DOM Elements
 // ----------------------------------------
 const authSection     = document.getElementById('authSection');
 const controlSection  = document.getElementById('controlSection');
@@ -66,10 +99,11 @@ const toggleDoorBtn2  = document.getElementById('toggleDoor2');
 const tokenDisplay    = document.getElementById('token');
 const welcomeTitle    = document.getElementById('welcomeTitle');
 
+// Variable to store the device token
 let deviceToken = '';
 
 // ----------------------------------------
-// 4. Generate Token
+// 5. Helper Function: Generate Random Token
 // ----------------------------------------
 function generateToken() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -81,7 +115,7 @@ function generateToken() {
 }
 
 // ----------------------------------------
-// 5. Check/Create Device Token
+// 6. Check/Create Device Token for User
 // ----------------------------------------
 async function checkAndGenerateToken() {
   const user = auth.currentUser;
@@ -109,7 +143,7 @@ async function checkAndGenerateToken() {
 }
 
 // ----------------------------------------
-// 6. Update Toggle Buttons
+// 7. Update Toggle Buttons
 // ----------------------------------------
 async function updateToggleButtons() {
   if (deviceToken) {
@@ -118,6 +152,7 @@ async function updateToggleButtons() {
   }
 }
 
+// Helper to update a single toggle button
 async function updateToggleButton(buttonElement, doorStatusKey) {
   const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
   const snapshot = await get(doorStatusRef);
@@ -127,6 +162,7 @@ async function updateToggleButton(buttonElement, doorStatusKey) {
   if (snapshot.exists()) {
     currentStatus = snapshot.val().status;
   } else {
+    // If no status, set "closed"
     await set(doorStatusRef, { status: 'closed' });
   }
 
@@ -136,45 +172,44 @@ async function updateToggleButton(buttonElement, doorStatusKey) {
 }
 
 // ----------------------------------------
-// 7. Toggle Door Status
+// 8. Toggle Door Status
 // ----------------------------------------
 async function toggleDoorStatus(buttonElement, doorStatusKey) {
   const user = auth.currentUser;
-  if (!user) {
-    alert("Please log in to send commands.");
-    return;
-  }
+  if (user) {
+    try {
+      if (deviceToken) {
+        console.log(`Toggling ${doorStatusKey} for device token: ${deviceToken}`);
+        const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
+        const statusSnapshot = await get(doorStatusRef);
 
-  if (!deviceToken) {
-    console.error("Device token not found for user.");
-    alert("Device token not found. Please log out and log in again.");
-    return;
-  }
+        let newStatus = 'open';
+        if (statusSnapshot.exists()) {
+          const currentStatus = statusSnapshot.val().status;
+          newStatus = (currentStatus === 'open') ? 'closed' : 'open';
+        }
 
-  try {
-    const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
-    const statusSnapshot = await get(doorStatusRef);
+        await set(doorStatusRef, { status: newStatus });
 
-    let newStatus = 'open';
-    if (statusSnapshot.exists()) {
-      const currentStatus = statusSnapshot.val().status;
-      newStatus = (currentStatus === 'open') ? 'closed' : 'open';
+        buttonElement.textContent = newStatus === 'open' ? 'Open' : 'Closed';
+        buttonElement.classList.toggle('closed', newStatus === 'closed');
+        buttonElement.classList.toggle('open', newStatus === 'open');
+
+        alert(`Door is now ${newStatus}`);
+      } else {
+        console.error("Device token not found for user.");
+        alert("Device token not found. Please log out and log in again.");
+      }
+    } catch (error) {
+      console.error("Error toggling door status:", error);
     }
-
-    await set(doorStatusRef, { status: newStatus });
-
-    buttonElement.textContent = (newStatus === 'open') ? 'Open' : 'Closed';
-    buttonElement.classList.toggle('closed', newStatus === 'closed');
-    buttonElement.classList.toggle('open', newStatus === 'open');
-
-    alert(`Door is now ${newStatus}`);
-  } catch (error) {
-    console.error("Error toggling door status:", error);
+  } else {
+    alert("Please log in to send commands.");
   }
 }
 
 // ----------------------------------------
-// 8. Auth Buttons
+// 9. Event Listeners (Register, Login, etc.)
 // ----------------------------------------
 registerBtn.addEventListener('click', () => {
   const email = emailInput.value.trim();
@@ -198,7 +233,7 @@ logoutBtn.addEventListener('click', () => {
   signOut(auth)
     .then(() => {
       console.log('Logged out');
-      tokenDisplay.textContent = '';
+      tokenDisplay.textContent = ''; // Clear token on logout
     });
 });
 
@@ -211,7 +246,7 @@ toggleDoorBtn2.addEventListener('click', () => {
 });
 
 // ----------------------------------------
-// 9. Real-Time Door Status Listeners
+// 10. Listen for Real-Time Updates to Door Status
 // ----------------------------------------
 function listenToDoorStatuses() {
   if (deviceToken) {
@@ -233,15 +268,16 @@ function listenToDoorStatus(buttonElement, doorStatusKey) {
 }
 
 // ----------------------------------------
-// 10. onAuthStateChanged
+// 11. Auth State Change: Show/Hide Sections
 // ----------------------------------------
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, user => {
   if (user) {
     console.log("User is logged in:", user.uid);
     authSection.style.display = 'none';
     controlSection.style.display = 'block';
-    welcomeTitle.style.display = 'none';
+    welcomeTitle.style.display = 'none'; // Hide the welcome title after login
 
+    // Generate/check device token, then update doors
     checkAndGenerateToken().then(() => {
       updateToggleButtons();
       listenToDoorStatuses();
@@ -250,7 +286,7 @@ onAuthStateChanged(auth, (user) => {
     console.log("User is not logged in.");
     authSection.style.display = 'flex';
     controlSection.style.display = 'none';
-    welcomeTitle.style.display = 'block';
-    tokenDisplay.textContent = '';
+    welcomeTitle.style.display = 'block'; // Show the welcome title when logged out
+    tokenDisplay.textContent = ''; // Clear token display when logged out
   }
 });
