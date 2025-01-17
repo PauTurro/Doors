@@ -4,11 +4,21 @@
   <meta charset="UTF-8" />
   
   <!-- Single meta tag that disallows pinch-to-zoom -->
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0,
-                 minimum-scale=1.0, maximum-scale=1.0,
-                 user-scalable=no" />
-  
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0,
+             minimum-scale=1.0, maximum-scale=1.0,
+             user-scalable=no"
+  />
+
+  <!-- For Android/Chrome: sets the address bar/toolbar color -->
+  <meta name="theme-color" content="#000000" />
+
+  <!-- For iOS PWA: enable standalone mode -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <!-- iOS PWA status bar style (can only be default, black, or black-translucent) -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
   <title>ESP32 Door Control PWA</title>
 
   <!-- Google Fonts: Nunito -->
