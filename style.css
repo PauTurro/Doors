@@ -11,6 +11,15 @@
     font-weight: 400; /* default weight for normal text */
   }
   
+  /* 
+    Add a default "touch-action" rule to block pinch gestures 
+    in modern browsers (esp. Android/Chrome). 
+    We keep scrolling (pan-x, pan-y), but remove pinch gestures.
+  */
+  html, body {
+    touch-action: pan-x pan-y; 
+  }
+  
   /* ===========================
      2. Body and Background
      =========================== */

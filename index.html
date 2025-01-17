@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" 
-    content="width=device-width, initial-scale=1.0,
-             minimum-scale=1.0, maximum-scale=1.0,
-             user-scalable=no" />
-             
+  <meta charset="UTF-8" />
+  
+  <!-- Single meta tag that disallows pinch-to-zoom -->
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0,
+                 minimum-scale=1.0, maximum-scale=1.0,
+                 user-scalable=no" />
+  
   <title>ESP32 Door Control PWA</title>
 
   <!-- Google Fonts: Nunito -->
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
     href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
     rel="stylesheet"
@@ -21,6 +24,31 @@
 
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json" />
+
+  <!-- Optional CSS to help block pinch-zoom on modern browsers (Android/Chrome) -->
+  <style>
+    /* This allows normal scrolling (pan-x pan-y) but blocks pinch gestures in many browsers */
+    html, body {
+      touch-action: pan-x pan-y;
+      /* If you want to disable scrolling entirely on small screens, 
+         you already use @media (max-width: 600px) { overflow: hidden; } in CSS. */
+    }
+  </style>
+
+  <!-- iOS Safari pinch-zoom workaround: prevent gesturestart/change/end -->
+  <script>
+    document.addEventListener('gesturestart', function (e) {
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('gesturechange', function (e) {
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('gestureend', function (e) {
+      e.preventDefault();
+    }, { passive: false });
+  </script>
 </head>
 <body>
   <div class="background">
@@ -240,7 +268,6 @@
     /************************************************
      *         Event Listeners for Auth
      ************************************************/
-
     registerBtn.addEventListener("click", () => {
       const email = emailInput.value.trim();
       const password = passwordInput.value;

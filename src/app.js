@@ -1,3 +1,21 @@
+// ----------------------------------------
+// 1. Prevent iOS pinch-zoom via JS (Optional)
+// ----------------------------------------
+document.addEventListener('gesturestart', function (e) {
+  e.preventDefault();
+}, { passive: false });
+document.addEventListener('gesturechange', function (e) {
+  e.preventDefault();
+}, { passive: false });
+document.addEventListener('gestureend', function (e) {
+  e.preventDefault();
+}, { passive: false });
+
+
+// ----------------------------------------
+// 2. Firebase Imports & Initialization
+// ----------------------------------------
+
 // Import necessary Firebase modules
 import { initializeApp } from "firebase/app";
 import {
@@ -17,7 +35,7 @@ import {
 
 // Firebase configuration with your credentials
 const firebaseConfig = {
-  apiKey: "AIzaSyDWMkL3P7OWlosSFXXRg8gvUQg6-7Y9uu8", // Replace with your actual API key
+  apiKey: "AIzaSyDWMkL3P7OWlosSFXXRg8gvUQg6-7Y9uu8",
   authDomain: "esp32door-control.firebaseapp.com",
   databaseURL: "https://esp32door-control-default-rtdb.firebaseio.com/",
   projectId: "esp32door-control",
@@ -32,7 +50,9 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// Example usage of Firebase functions for authentication
+// ----------------------------------------
+// 3. Firebase Auth & DB Helper Functions
+// ----------------------------------------
 export function registerUser(email, password) {
   return createUserWithEmailAndPassword(auth, email, password);
 }
@@ -49,7 +69,6 @@ export function onAuthStateChangedListener(callback) {
   return onAuthStateChanged(auth, callback);
 }
 
-// Example usage of Firebase Realtime Database functions
 export function writeData(path, data) {
   const dataRef = ref(db, path);
   return set(dataRef, data);
@@ -65,23 +84,27 @@ export function onDataChangeListener(path, callback) {
   return onValue(dataRef, callback);
 }
 
-// DOM elements
-const authSection = document.getElementById('authSection');
-const controlSection = document.getElementById('controlSection');
-const emailInput = document.getElementById('email');
-const passwordInput = document.getElementById('password');
-const registerBtn = document.getElementById('registerBtn');
-const loginBtn = document.getElementById('loginBtn');
-const logoutBtn = document.getElementById('logoutBtn');
-const toggleDoorBtn1 = document.getElementById('toggleDoor1');
-const toggleDoorBtn2 = document.getElementById('toggleDoor2');
-const tokenDisplay = document.getElementById('token');
-const welcomeTitle = document.getElementById('welcomeTitle');
+// ----------------------------------------
+// 4. DOM Elements
+// ----------------------------------------
+const authSection     = document.getElementById('authSection');
+const controlSection  = document.getElementById('controlSection');
+const emailInput      = document.getElementById('email');
+const passwordInput   = document.getElementById('password');
+const registerBtn     = document.getElementById('registerBtn');
+const loginBtn        = document.getElementById('loginBtn');
+const logoutBtn       = document.getElementById('logoutBtn');
+const toggleDoorBtn1  = document.getElementById('toggleDoor1');
+const toggleDoorBtn2  = document.getElementById('toggleDoor2');
+const tokenDisplay    = document.getElementById('token');
+const welcomeTitle    = document.getElementById('welcomeTitle');
 
 // Variable to store the device token
 let deviceToken = '';
 
-// Helper function to generate a random token
+// ----------------------------------------
+// 5. Helper Function: Generate Random Token
+// ----------------------------------------
 function generateToken() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let token = '';
@@ -91,26 +114,24 @@ function generateToken() {
   return token;
 }
 
-// Function to check and generate the device token
+// ----------------------------------------
+// 6. Check/Create Device Token for User
+// ----------------------------------------
 async function checkAndGenerateToken() {
   const user = auth.currentUser;
   if (user) {
     try {
-      // Reference to the user's device token
       const userTokenRef = ref(db, `users/${user.uid}/deviceToken`);
       const snapshot = await get(userTokenRef);
 
       if (snapshot.exists()) {
-        // If token already exists, use it
         deviceToken = snapshot.val();
         console.log("Token already exists:", deviceToken);
       } else {
-        // If no token exists, generate a new one and save it
         deviceToken = generateToken();
         await set(userTokenRef, deviceToken);
         console.log("New token generated and saved:", deviceToken);
       }
-      // Display the token
       tokenDisplay.textContent = deviceToken;
     } catch (error) {
       console.error("Error checking or saving token:", error);
@@ -121,62 +142,55 @@ async function checkAndGenerateToken() {
   }
 }
 
-// Function to update the toggle buttons based on door statuses
+// ----------------------------------------
+// 7. Update Toggle Buttons
+// ----------------------------------------
 async function updateToggleButtons() {
   if (deviceToken) {
-    // Update Door 1 Button
     await updateToggleButton(toggleDoorBtn1, 'door1Status');
-
-    // Update Door 2 Button
     await updateToggleButton(toggleDoorBtn2, 'door2Status');
   }
 }
 
-// Helper function to update a single toggle button
+// Helper to update a single toggle button
 async function updateToggleButton(buttonElement, doorStatusKey) {
   const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
   const snapshot = await get(doorStatusRef);
 
-  let currentStatus = 'closed'; // Default status
+  let currentStatus = 'closed'; // Default
 
   if (snapshot.exists()) {
     currentStatus = snapshot.val().status;
   } else {
-    // If no status exists, set it to 'closed' by default
+    // If no status, set "closed"
     await set(doorStatusRef, { status: 'closed' });
   }
 
-  // Update button text and class
   buttonElement.textContent = currentStatus === 'open' ? 'Open' : 'Closed';
   buttonElement.classList.toggle('closed', currentStatus === 'closed');
   buttonElement.classList.toggle('open', currentStatus === 'open');
 }
 
-// Function to toggle door status
+// ----------------------------------------
+// 8. Toggle Door Status
+// ----------------------------------------
 async function toggleDoorStatus(buttonElement, doorStatusKey) {
   const user = auth.currentUser;
   if (user) {
     try {
       if (deviceToken) {
         console.log(`Toggling ${doorStatusKey} for device token: ${deviceToken}`);
-
-        // Reference to the door status
         const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
-
-        // Get the current status
         const statusSnapshot = await get(doorStatusRef);
-        let newStatus = 'open';
 
+        let newStatus = 'open';
         if (statusSnapshot.exists()) {
           const currentStatus = statusSnapshot.val().status;
-          // Toggle the status
-          newStatus = currentStatus === 'open' ? 'closed' : 'open';
+          newStatus = (currentStatus === 'open') ? 'closed' : 'open';
         }
 
-        // Update the door status
         await set(doorStatusRef, { status: newStatus });
 
-        // Update the button
         buttonElement.textContent = newStatus === 'open' ? 'Open' : 'Closed';
         buttonElement.classList.toggle('closed', newStatus === 'closed');
         buttonElement.classList.toggle('open', newStatus === 'open');
@@ -194,7 +208,9 @@ async function toggleDoorStatus(buttonElement, doorStatusKey) {
   }
 }
 
-// Event listeners
+// ----------------------------------------
+// 9. Event Listeners (Register, Login, etc.)
+// ----------------------------------------
 registerBtn.addEventListener('click', () => {
   const email = emailInput.value.trim();
   const password = passwordInput.value;
@@ -229,37 +245,39 @@ toggleDoorBtn2.addEventListener('click', () => {
   toggleDoorStatus(toggleDoorBtn2, 'door2Status');
 });
 
-// Listen for real-time updates to the door statuses
+// ----------------------------------------
+// 10. Listen for Real-Time Updates to Door Status
+// ----------------------------------------
 function listenToDoorStatuses() {
   if (deviceToken) {
-    // Listen to Door 1 Status
     listenToDoorStatus(toggleDoorBtn1, 'door1Status');
-
-    // Listen to Door 2 Status
     listenToDoorStatus(toggleDoorBtn2, 'door2Status');
   }
 }
 
-// Helper function to listen to a single door status
 function listenToDoorStatus(buttonElement, doorStatusKey) {
   const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
   onValue(doorStatusRef, (snapshot) => {
     if (snapshot.exists()) {
       const status = snapshot.val().status;
-      // Update button text and class
-      buttonElement.textContent = status === 'open' ? 'Open' : 'Closed';
+      buttonElement.textContent = (status === 'open') ? 'Open' : 'Closed';
       buttonElement.classList.toggle('closed', status === 'closed');
       buttonElement.classList.toggle('open', status === 'open');
     }
   });
 }
 
+// ----------------------------------------
+// 11. Auth State Change: Show/Hide Sections
+// ----------------------------------------
 onAuthStateChanged(auth, user => {
   if (user) {
     console.log("User is logged in:", user.uid);
     authSection.style.display = 'none';
     controlSection.style.display = 'block';
     welcomeTitle.style.display = 'none'; // Hide the welcome title after login
+
+    // Generate/check device token, then update doors
     checkAndGenerateToken().then(() => {
       updateToggleButtons();
       listenToDoorStatuses();
