@@ -338,9 +338,12 @@
 
 /* Make container invisible and remove shadows on mobile screens */
 @media screen and (max-width: 768px) {
-    .container {
-        visibility: hidden !important; /* Hide the container */
-        box-shadow: none !important; /* Remove any shadows */
-        background-color: transparent !important; /* Make background transparent */
-    }
+  .container {
+      visibility: hidden !important; /* Hide the container */
+      opacity: 0 !important; /* Fully transparent */
+      height: 0 !important; /* Collapse container height */
+      width: 0 !important; /* Collapse container width */
+      box-shadow: none !important; /* Remove shadows */
+      background-color: transparent !important; /* Ensure no background */
+  }
 }
