@@ -3,15 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   
-  <!-- 
-    Viewport: 
-    - Removed user-scalable=no 
-    - This allows iOS to show the keyboard properly in some cases 
-  -->
+  <!-- Disallows pinch-to-zoom -->
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0,
-             minimum-scale=1.0, maximum-scale=1.0"
+             minimum-scale=1.0, maximum-scale=1.0,
+             user-scalable=no"
   />
 
   <!-- Android/Chrome: Make toolbar/status bar white -->
@@ -37,14 +34,50 @@
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json" />
 
-  <!-- 
-    Removed the iOS gesture event prevention. 
-    That code used to block the keyboard on iOS PWAs. 
-  -->
-  
-  <!-- If you still want to prevent pinch-zoom on non-iOS, 
-       do a user-agent check in a separate script, 
-       but never block gesture events on iOS if you need text input. -->
+  <!-- Optional CSS to help block pinch-zoom on modern browsers (Android/Chrome) -->
+  <style>
+    /* 
+      This allows normal scrolling (pan-x pan-y) but blocks pinch gestures 
+      in many browsers.
+    */
+    html, body {
+      touch-action: pan-x pan-y;
+      margin: 0;           /* Remove default margin so body can reach top edge */
+      background-color: #FFF; /* Make background white to match status bar */
+      color: #000;         /* Example text color */
+      
+      /* Safe area for iOS notch/rounded corners */
+      padding-top: env(safe-area-inset-top);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* Fallback for older iOS versions that used 'constant()' instead of 'env()' */
+    @supports(padding: max(0px)) {
+      body {
+        padding-top: constant(safe-area-inset-top);
+        padding-left: constant(safe-area-inset-left);
+        padding-right: constant(safe-area-inset-right);
+        padding-bottom: constant(safe-area-inset-bottom);
+      }
+    }
+  </style>
+
+  <!-- iOS Safari pinch-zoom workaround: prevent gesturestart/change/end -->
+  <script>
+    document.addEventListener('gesturestart', function (e) {
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('gesturechange', function (e) {
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('gestureend', function (e) {
+      e.preventDefault();
+    }, { passive: false });
+  </script>
 </head>
 <body>
   <div class="background">
@@ -65,10 +98,12 @@
         <p id="tokenDisplay">
           Your Token: <span id="token"></span>
         </p>
+
         <div class="toggle-buttons">
           <button id="toggleDoor1" class="toggle-btn">Toggle Door 1</button>
           <button id="toggleDoor2" class="toggle-btn">Toggle Door 2</button>
         </div>
+
         <button id="logoutBtn">Logout</button>
       </div>
     </div>
@@ -99,7 +134,7 @@
 
     // 2. Firebase configuration (Use your real credentials)
     const firebaseConfig = {
-      apiKey: "AIzaSyDWM...",
+      apiKey: "AIzaSyDWMkL3P7OWlosSFXXRg8gvUQg6-7Y9uu8",
       authDomain: "esp32door-control.firebaseapp.com",
       databaseURL: "https://esp32door-control-default-rtdb.firebaseio.com/",
       projectId: "esp32door-control",
@@ -129,6 +164,7 @@
     const tokenDisplay    = document.getElementById("token");
     const welcomeTitle    = document.getElementById("welcomeTitle");
 
+    // Variable to store the device token
     let deviceToken = "";
 
     /************************************************
@@ -245,6 +281,7 @@
       }
     }
 
+    // Helper for attaching onValue listeners to door statuses
     function listenToDoorStatus(buttonElement, doorStatusKey) {
       const doorStatusRef = ref(db, "devices/" + deviceToken + "/" + doorStatusKey);
       onValue(doorStatusRef, (snapshot) => {
@@ -313,16 +350,19 @@
     onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log("User is logged in:", user.uid);
+        // Hide login, show control screen
         authSection.style.display = "none";
         controlSection.style.display = "block";
         welcomeTitle.style.display = "none";
 
+        // Generate/check device token, then update doors
         checkAndGenerateToken().then(() => {
           updateToggleButtons();
           listenToDoorStatuses();
         });
       } else {
         console.log("User is not logged in.");
+        // Show login, hide control screen
         authSection.style.display = "flex";
         controlSection.style.display = "none";
         welcomeTitle.style.display = "block";
