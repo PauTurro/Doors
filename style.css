@@ -199,7 +199,7 @@
   }
   
   .toggle-btn.closed {
-    background-color: var(--toggle-closed-bg-color, #b1a494);
+    background-color: var(--toggle-closed-bg-color, #785b31);
   }
   
   .toggle-btn:hover {
@@ -217,7 +217,7 @@
     font-weight: 600;
   
     color: var(--logout-button-text-color, #ffffff);
-    background-color: var(--logout-button-bg-color, #eda655);
+    background-color: var(--logout-button-bg-color, #785b31);
     border: none;
     border-radius: var(--logout-button-border-radius, 20px);
     cursor: pointer;
