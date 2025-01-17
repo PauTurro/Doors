@@ -307,3 +307,9 @@
     transition: background-color 5000s ease-in-out 0s;
   }
   
+
+/* Home screen version: Make the container invisible but keep the shadow */
+.container {
+    background-color: transparent; /* Makes the container invisible */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Keeps the shadow visible */
+}
