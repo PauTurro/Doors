@@ -319,3 +319,18 @@
         width: 100%; /* Ensures full width */
     }
 }
+
+
+/* Robust mobile styling for the container */
+@media screen and (max-width: 768px) {
+    .container {
+        position: fixed !important; /* Enforce fixed position */
+        top: 0 !important; /* Align to the top */
+        left: 0;
+        right: 0;
+        margin: 0 !important; /* Remove all margins */
+        width: 100% !important; /* Full-width container */
+        background-color: white; /* Optional: background to ensure visibility */
+        z-index: 1000; /* Bring to front */
+    }
+}
