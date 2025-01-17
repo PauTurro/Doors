@@ -364,7 +364,7 @@
 
   .container input, /* Inputs inside the container */
   .container button {
-      font-size: 2rem !important; /* Larger input and button text */
+      font-size: 1.5rem !important; /* Larger input and button text */
       padding: 1rem !important; /* Increase padding for better touch targets */
   }
 
