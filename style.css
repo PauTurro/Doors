@@ -341,11 +341,14 @@
   .container {
       background-color: transparent !important; /* Remove background */
       box-shadow: none !important; /* Remove shadows */
-      border: none !important; /* Remove any borders */
+      border: none !important; /* Remove borders */
+      visibility: visible !important; /* Ensure container itself is visible */
+      opacity: 1 !important; /* Fully visible */
   }
 
+  /* Override for child elements to ensure visibility */
   .container * {
-      visibility: visible !important; /* Ensure child elements are visible */
-      opacity: 1 !important; /* Fully visible content */
+      visibility: visible !important;
+      opacity: 1 !important;
   }
 }
