@@ -4,12 +4,15 @@
     <meta charset="UTF-8" />
 
     <!-- Disallows pinch-to-zoom -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
 
     <!-- Android/Chrome: Make toolbar/status bar white -->
     <meta name="theme-color" content="#FFFFFF" />
 
-    <!-- iOS PWA: Enable standalone mode and set status bar to 'default' -->
+    <!-- iOS PWA: Enable standalone and set status bar to default -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
@@ -38,7 +41,8 @@
 
     <!-- Optional inline CSS to help block pinch-zoom -->
     <style>
-      html, body {
+      html,
+      body {
         touch-action: pan-x pan-y;
         margin: 0;
         background-color: #FFF;
@@ -50,6 +54,7 @@
         padding-right: env(safe-area-inset-right);
         padding-bottom: env(safe-area-inset-bottom);
       }
+
       @supports(padding: max(0px)) {
         body {
           padding-top: constant(safe-area-inset-top);
@@ -60,25 +65,44 @@
       }
     </style>
 
-    <!-- iOS Safari pinch-zoom workaround -->
+    <!-- iOS Safari pinch-zoom workaround (optional) -->
     <script>
-      document.addEventListener('gesturestart', function (e) {
-        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-          e.preventDefault();
-        }
-      }, { passive: false });
-
-      document.addEventListener('gesturechange', function (e) {
-        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-          e.preventDefault();
-        }
-      }, { passive: false });
-
-      document.addEventListener('gestureend', function (e) {
-        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-          e.preventDefault();
-        }
-      }, { passive: false });
+      document.addEventListener(
+        "gesturestart",
+        function (e) {
+          if (
+            e.target.tagName !== "INPUT" &&
+            e.target.tagName !== "TEXTAREA"
+          ) {
+            e.preventDefault();
+          }
+        },
+        { passive: false }
+      );
+      document.addEventListener(
+        "gesturechange",
+        function (e) {
+          if (
+            e.target.tagName !== "INPUT" &&
+            e.target.tagName !== "TEXTAREA"
+          ) {
+            e.preventDefault();
+          }
+        },
+        { passive: false }
+      );
+      document.addEventListener(
+        "gestureend",
+        function (e) {
+          if (
+            e.target.tagName !== "INPUT" &&
+            e.target.tagName !== "TEXTAREA"
+          ) {
+            e.preventDefault();
+          }
+        },
+        { passive: false }
+      );
     </script>
   </head>
 
@@ -89,7 +113,6 @@
         <h1 class="title" id="welcomeTitle">Welcome to the future</h1>
 
         <!-- Auth Section (Login/Register) -->
-        <!-- Hidden by default via CSS. Router will show it if user is not logged in. -->
         <div id="authSection" class="auth-horizontal">
           <input type="email" id="email" placeholder="Email" />
           <input type="password" id="password" placeholder="Password" />
@@ -98,17 +121,14 @@
         </div>
 
         <!-- Control Section (Visible after login) -->
-        <!-- Also hidden by default via CSS, router will show it if user is logged in. -->
         <div id="controlSection">
           <p id="tokenDisplay">
             Your Token: <span id="token"></span>
           </p>
-
           <div class="toggle-buttons">
             <button id="toggleDoor1" class="toggle-btn">Toggle Door 1</button>
             <button id="toggleDoor2" class="toggle-btn">Toggle Door 2</button>
           </div>
-
           <button id="logoutBtn">Logout</button>
         </div>
       </div>

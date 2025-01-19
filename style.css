@@ -11,11 +11,10 @@
   
   /* 
     Add a default "touch-action" rule to block pinch gestures 
-    in modern browsers (esp. Android/Chrome). 
   */
   html,
   body {
-    touch-action: pan-x pan-y; 
+    touch-action: pan-x pan-y;
     margin: 0;
     padding: 0;
   }
@@ -64,7 +63,7 @@
   }
   
   /* ===========================
-     5. Authentication Horizontal Section
+     5. Auth Horizontal
      =========================== */
   .auth-horizontal {
     display: flex;
@@ -91,7 +90,6 @@
     outline: none;
     transition: border-color 0.3s ease;
   }
-  
   input[type="email"]:focus,
   input[type="password"]:focus {
     border-color: var(--input-focus-border, #ffcf3f);
@@ -111,11 +109,9 @@
     cursor: pointer;
     transition: background-color 0.45s ease, transform 0.2s ease;
   }
-  
   button:hover {
     background-color: var(--button-hover-bg-color, #785b31);
   }
-  
   button:active {
     transform: scale(1);
   }
@@ -126,7 +122,6 @@
   .login-btn {
     background-color: var(--login-button-bg-color, #f9c836);
   }
-  
   .login-btn:hover {
     background-color: var(--login-button-hover-bg-color, #785b31);
   }
@@ -174,15 +169,12 @@
     transition: background-color 1s ease, transform 0.2s ease;
     background-color: var(--toggle-button-bg-color, rgba(255, 207, 95, 0.7));
   }
-  
   .toggle-btn.open {
     background-color: var(--toggle-open-bg-color, #ffd84d);
   }
-  
   .toggle-btn.closed {
     background-color: var(--toggle-closed-bg-color, #785b31);
   }
-  
   .toggle-btn:hover {
     transform: translateY(-2px);
   }
@@ -206,11 +198,9 @@
     margin-right: auto;
     transition: background-color 0.3s ease, transform 0.2s ease;
   }
-  
   #logoutBtn:hover {
     background-color: var(--logout-button-hover-bg-color, #785b31);
   }
-  
   #logoutBtn:active {
     transform: scale(0.98);
   }
@@ -222,14 +212,15 @@
     .auth-horizontal {
       flex-direction: column;
     }
-    /* Disable scrolling on phone screens (if desired) */
-    html,
-    body {
+    /* Optional: disable scrolling on phone screens */
+    html, body {
       overflow: hidden;
     }
   }
   
-  /* Fade Animations (Optional) */
+  /* -----------------------------------
+     F A D E   A N I M A T I O N   S E C T I O N
+  ----------------------------------- */
   @keyframes fadeInTitle {
     0% {
       opacity: 0;
@@ -246,6 +237,7 @@
     transform: translateY(-10px);
   }
   
+  /* Slower fade for inputs & buttons */
   @keyframes fadeInSlower {
     0% {
       opacity: 0;
@@ -277,35 +269,10 @@
   }
   
   /* -----------------------------------
-     Hide sections by default, show via router
-  -------------------------------------- */
+     Hide sections by default; router shows them
+  ----------------------------------- */
   #authSection,
   #controlSection {
-    display: none; /* We rely on router to show these */
-  }
-  
-  /* Robust mobile styling */
-  @media screen and (max-width: 768px) {
-    .container {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0;
-      right: 0;
-      margin: 0 !important;
-      width: 100% !important;
-      background-color: white;
-      z-index: 1000;
-    }
-    .container {
-      background-color: transparent !important;
-      box-shadow: none !important;
-      border: none !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-    }
-    .container * {
-      visibility: visible !important;
-      opacity: 1 !important;
-    }
+    display: none;
   }
   
