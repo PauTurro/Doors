@@ -1,32 +1,311 @@
-
-/* General Styles */
-body {
-  font-family: 'Nunito', sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
-.navbar {
-  display: flex;
-  background-color: #f9c836;
-  padding: 10px;
-  justify-content: space-around;
-}
-
-.navbar button {
-  background: #785b31;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.navbar button:hover {
-  background: #ffd84d;
-}
-
-/* Content Area */
-#app {
-  padding: 20px;
-}
+/* ===========================
+   1. Basic Reset
+   =========================== */
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Nunito", sans-serif;
+    font-weight: 400; /* default weight for normal text */
+  }
+  
+  /* 
+    Add a default "touch-action" rule to block pinch gestures 
+    in modern browsers (esp. Android/Chrome). 
+  */
+  html,
+  body {
+    touch-action: pan-x pan-y; 
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* ===========================
+     2. Body and Background
+     =========================== */
+  body {
+    background-color: var(--app-bg-color, #fffdf2);
+    color: var(--app-text-color, #5e4a4a);
+    width: 100%;
+    min-height: 100vh;
+  }
+  
+  .background {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--app-bg-color, #fffdf2);
+    width: 100%;
+    min-height: 100vh;
+  }
+  
+  /* ===========================
+     3. Container
+     =========================== */
+  .container {
+    margin: 0 auto;
+    text-align: center;
+    width: 900px;
+    padding: 50px;
+    background-color: var(--container-bg-color, #ffffff00);
+    border-radius: var(--container-border-radius, 30px);
+    box-shadow: 20px 20px 200px rgba(240, 194, 8, 0.539);
+  }
+  
+  /* ===========================
+     4. Title
+     =========================== */
+  .title {
+    font-weight: 700;
+    font-size: var(--title-font-size, 2rem);
+    color: var(--title-color, #785b31);
+    margin-bottom: 30px;
+  }
+  
+  /* ===========================
+     5. Authentication Horizontal Section
+     =========================== */
+  .auth-horizontal {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  /* ===========================
+     6. Input Fields
+     =========================== */
+  input[type="email"],
+  input[type="password"] {
+    padding: var(--input-padding, 12px);
+    font-size: var(--input-font-size, 1rem);
+    font-weight: 680;
+    border: var(--input-border, 2px solid #ffe87f);
+    border-radius: var(--input-border-radius, 14px);
+    max-width: var(--input-max-width, 500px);
+    background-color: var(--input-bg-color, #fffdf2);
+    color: var(--input-text-color, #785b31);
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  input[type="email"]:focus,
+  input[type="password"]:focus {
+    border-color: var(--input-focus-border, #ffcf3f);
+  }
+  
+  /* ===========================
+     7. Buttons
+     =========================== */
+  button {
+    padding: var(--button-padding, 10px 15px);
+    font-size: var(--button-font-size, 1rem);
+    font-weight: 650;
+    color: var(--button-text-color, #ffffff);
+    background-color: var(--button-bg-color, #f9c836);
+    border: var(--button-border, none);
+    border-radius: var(--button-border-radius, 17px);
+    cursor: pointer;
+    transition: background-color 0.45s ease, transform 0.2s ease;
+  }
+  
+  button:hover {
+    background-color: var(--button-hover-bg-color, #785b31);
+  }
+  
+  button:active {
+    transform: scale(1);
+  }
+  
+  /* ===========================
+     8. Login Button
+     =========================== */
+  .login-btn {
+    background-color: var(--login-button-bg-color, #f9c836);
+  }
+  
+  .login-btn:hover {
+    background-color: var(--login-button-hover-bg-color, #785b31);
+  }
+  
+  /* ===========================
+     9. Control Section
+     =========================== */
+  #controlSection {
+    margin-top: 20px;
+  }
+  
+  /* ===========================
+     10. Token Display
+     =========================== */
+  #tokenDisplay {
+    font-size: var(--token-font-size, 2.5rem);
+    font-weight: 700;
+    color: var(--token-color, #8e6c3b);
+    margin-bottom: 20px;
+  }
+  
+  /* ===========================
+     11. Toggle Buttons Container
+     =========================== */
+  .toggle-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  /* ===========================
+     12. Toggle Buttons
+     =========================== */
+  .toggle-btn {
+    width: var(--toggle-button-width, 200px);
+    height: var(--toggle-button-height, 50px);
+    font-size: var(--toggle-button-font-size, 18px);
+    font-weight: 600;
+    color: var(--toggle-button-text-color, #ffffff);
+    border: none;
+    border-radius: var(--toggle-button-border-radius, 20px);
+    cursor: pointer;
+    transition: background-color 1s ease, transform 0.2s ease;
+    background-color: var(--toggle-button-bg-color, rgba(255, 207, 95, 0.7));
+  }
+  
+  .toggle-btn.open {
+    background-color: var(--toggle-open-bg-color, #ffd84d);
+  }
+  
+  .toggle-btn.closed {
+    background-color: var(--toggle-closed-bg-color, #785b31);
+  }
+  
+  .toggle-btn:hover {
+    transform: translateY(-2px);
+  }
+  
+  /* ===========================
+     13. Logout Button
+     =========================== */
+  #logoutBtn {
+    margin-top: 50px;
+    width: var(--logout-button-width, 150px);
+    height: var(--logout-button-height, 40px);
+    font-size: var(--logout-button-font-size, 16px);
+    font-weight: 600;
+    color: var(--logout-button-text-color, #ffffff);
+    background-color: var(--logout-button-bg-color, #785b31);
+    border: none;
+    border-radius: var(--logout-button-border-radius, 20px);
+    cursor: pointer;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  #logoutBtn:hover {
+    background-color: var(--logout-button-hover-bg-color, #785b31);
+  }
+  
+  #logoutBtn:active {
+    transform: scale(0.98);
+  }
+  
+  /* ===========================
+     14. Responsive Design
+     =========================== */
+  @media (max-width: 600px) {
+    .auth-horizontal {
+      flex-direction: column;
+    }
+    /* Disable scrolling on phone screens (if desired) */
+    html,
+    body {
+      overflow: hidden;
+    }
+  }
+  
+  /* Fade Animations (Optional) */
+  @keyframes fadeInTitle {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .title {
+    animation: fadeInTitle 2.5s ease forwards;
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  
+  @keyframes fadeInSlower {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .auth-horizontal input[type="email"],
+  .auth-horizontal input[type="password"],
+  .auth-horizontal button,
+  .register-btn {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInSlower 1s ease forwards;
+  }
+  
+  /* Autofill Fix for Chrome, Safari, etc. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-text-fill-color: #785b31 !important;
+    -webkit-box-shadow: 0 0 0 30px #fffdf2 inset !important;
+    box-shadow: 0 0 0 30px #fffdf2 inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+  
+  /* -----------------------------------
+     Hide sections by default, show via router
+  -------------------------------------- */
+  #authSection,
+  #controlSection {
+    display: none; /* We rely on router to show these */
+  }
+  
+  /* Robust mobile styling */
+  @media screen and (max-width: 768px) {
+    .container {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0;
+      right: 0;
+      margin: 0 !important;
+      width: 100% !important;
+      background-color: white;
+      z-index: 1000;
+    }
+    .container {
+      background-color: transparent !important;
+      box-shadow: none !important;
+      border: none !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    .container * {
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+  }
+  

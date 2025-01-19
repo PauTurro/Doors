@@ -1,20 +1,120 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#FFFFFF" />
-  <link rel="stylesheet" href="style.css" />
-  <script type="module" src="routes.js"></script>
-  <title>ESP32 Door Control PWA</title>
-</head>
-<body>
-  <header class="navbar">
-    <button onclick="navigateTo('home')">Home</button>
-    <button onclick="navigateTo('login')">Login</button>
-    <button onclick="navigateTo('control')">Control</button>
-  </header>
-  <main id="app"></main>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- Disallows pinch-to-zoom -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+
+    <!-- Android/Chrome: Make toolbar/status bar white -->
+    <meta name="theme-color" content="#FFFFFF" />
+
+    <!-- iOS PWA: Enable standalone mode and set status bar to 'default' -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+    <title>ESP32 Door Control PWA</title>
+
+    <!-- Google Fonts: Nunito -->
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json" />
+
+    <!-- Optional inline CSS to help block pinch-zoom -->
+    <style>
+      html, body {
+        touch-action: pan-x pan-y;
+        margin: 0;
+        background-color: #FFF;
+        color: #000;
+
+        /* Safe area for iOS notch/rounded corners */
+        padding-top: env(safe-area-inset-top);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      @supports(padding: max(0px)) {
+        body {
+          padding-top: constant(safe-area-inset-top);
+          padding-left: constant(safe-area-inset-left);
+          padding-right: constant(safe-area-inset-right);
+          padding-bottom: constant(safe-area-inset-bottom);
+        }
+      }
+    </style>
+
+    <!-- iOS Safari pinch-zoom workaround -->
+    <script>
+      document.addEventListener('gesturestart', function (e) {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      document.addEventListener('gesturechange', function (e) {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      document.addEventListener('gestureend', function (e) {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+        }
+      }, { passive: false });
+    </script>
+  </head>
+
+  <body>
+    <div class="background">
+      <div class="container">
+        <!-- Title -->
+        <h1 class="title" id="welcomeTitle">Welcome to the future</h1>
+
+        <!-- Auth Section (Login/Register) -->
+        <!-- Hidden by default via CSS. Router will show it if user is not logged in. -->
+        <div id="authSection" class="auth-horizontal">
+          <input type="email" id="email" placeholder="Email" />
+          <input type="password" id="password" placeholder="Password" />
+          <button id="registerBtn" class="register-btn">Register</button>
+          <button id="loginBtn" class="login-btn">Go</button>
+        </div>
+
+        <!-- Control Section (Visible after login) -->
+        <!-- Also hidden by default via CSS, router will show it if user is logged in. -->
+        <div id="controlSection">
+          <p id="tokenDisplay">
+            Your Token: <span id="token"></span>
+          </p>
+
+          <div class="toggle-buttons">
+            <button id="toggleDoor1" class="toggle-btn">Toggle Door 1</button>
+            <button id="toggleDoor2" class="toggle-btn">Toggle Door 2</button>
+          </div>
+
+          <button id="logoutBtn">Logout</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main JS (Routing + Firebase + App Logic) -->
+    <script type="module" src="app.js"></script>
+  </body>
 </html>
