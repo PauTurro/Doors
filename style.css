@@ -228,7 +228,7 @@
   }
   
   #logoutBtn:hover {
-    background-color: var(--logout-button-hover-bg-color, #ff9f1b);
+    background-color: var(--logout-button-hover-bg-color, #785b31);
   }
   
   #logoutBtn:active {
