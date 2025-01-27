@@ -215,19 +215,60 @@
     transform: scale(0.98);
   }
   
-
-
-
-
-
-
-  @media (max-width: 600px) {
-    /* Stack inputs and buttons vertically on mobile */
+  @media screen and (max-width: 600px) {
+    /* 
+       A) Make the container full width, 
+          reduce or remove box-shadow, etc.
+    */
+    .container {
+      width: 95% !important;        /* Slightly bigger on phones */
+      max-width: none !important;   /* Remove 800px constraint */
+      margin: 20px auto;           /* Some top/bottom breathing room */
+      padding: 20px;
+      border-radius: 15px;         /* Smaller border radius for mobile */
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Lighter shadow */
+    }
+  
+    /* B) Adjust the title size (optional) */
+    .title {
+      font-size: 1.2rem !important; /* Maybe slightly smaller or bigger */
+      margin-bottom: 20px;
+    }
+  
+    /* C) Stack the email & password fields vertically */
     .auth-horizontal {
-      flex-direction: column;
+      flex-direction: column; 
       align-items: center;
       justify-content: center;
-      gap: 12px; /* Adjust spacing as needed */
+      gap: 16px; /* Increase or decrease as desired */
+      margin-top: 16px;
+    }
+    
+    /* D) Make inputs fill more horizontal space on phone */
+    input[type="email"],
+    input[type="password"] {
+      width: 80% !important;     /* Adapt the width for phone */
+      max-width: 300px;         /* A reasonable limit on phone */
+      font-size: 1rem;          /* Slightly bigger text on phone */
+      border-radius: 8px;
+    }
+  
+    /* E) Buttons: widen, increase text size, etc. */
+    button,
+    .login-btn {
+      width: 60%;
+      max-width: 200px;
+      font-size: 1rem;
+      margin: 0 auto; /* Center horizontally if block-level */
+      border-radius: 20px;
+    }
+    
+    /* F) Optional: If you want to ensure .container 
+          is not fixed or avoid some forced positioning 
+          from other media queries: 
+    */
+    .container {
+      position: static !important;
     }
   }
   
@@ -239,7 +280,23 @@
 
 
 
-  /* ===========================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* ===========================
      15. Fade Animations
      =========================== */
   @keyframes fadeInTitle {
