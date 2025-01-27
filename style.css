@@ -239,7 +239,7 @@
     .container {
       width: 100% !important;        /* Slightly bigger on phones */
       max-width: none !important;   /* Remove 800px constraint */
-      margin: 20px auto;           /* Some top/bottom breathing room */
+      margin: 25px auto;           /* Some top/bottom breathing room */
       padding: 20px;
       border-radius: 15px;         /* Smaller border radius for mobile */
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Lighter shadow */
@@ -247,7 +247,7 @@
   
     /* B) Adjust the title size (optional) */
     .title {
-      font-size: 2.8rem !important; /* Maybe slightly smaller or bigger */
+      font-size: 2.5rem !important; /* Maybe slightly smaller or bigger */
       margin-bottom: 20px;
     }
   
@@ -273,7 +273,7 @@
       .login-btn {
       width: 14%;
       max-width: 200px;
-      font-size: 1.1rem;
+      font-size: 1.3rem;
       margin: 0 auto; /* Center horizontally if block-level */
       border-radius: 15px;
     }
@@ -282,7 +282,7 @@
     button {
       width: 30%;
       max-width: 200px;
-      font-size: 1.1rem;
+      font-size: 1.3rem;
       margin: 0 auto; /* Center horizontally if block-level */
       border-radius: 15px;
     }
