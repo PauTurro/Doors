@@ -247,7 +247,7 @@
   
     /* B) Adjust the title size (optional) */
     .title {
-      font-size: 3rem !important; /* Maybe slightly smaller or bigger */
+      font-size: 2.8rem !important; /* Maybe slightly smaller or bigger */
       margin-bottom: 20px;
     }
   
@@ -256,7 +256,7 @@
       flex-direction: column; 
       align-items: center;
       justify-content: center;
-      gap: 16px; /* Increase or decrease as desired */
+      gap: 11px; /* Increase or decrease as desired */
       margin-top: 16px;
     }
     
@@ -271,7 +271,7 @@
   
     /* E) Buttons: widen, increase text size, etc. */
       .login-btn {
-      width: 18%;
+      width: 14%;
       max-width: 200px;
       font-size: 1.1rem;
       margin: 0 auto; /* Center horizontally if block-level */
