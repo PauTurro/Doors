@@ -229,7 +229,7 @@
   
     /* B) Title size */
     .title {
-      font-size: 3rem !important;
+      font-size: 5rem !important;
       margin-bottom: 20px;
     }
   
@@ -275,19 +275,10 @@
       font-size: 2rem;
       margin: 10px auto;
       border-radius: 10px;
-      background-color: #f9c836;
+      background-color: #272726;
     }
   
-    /* 3) Another separate button (if needed) */
-    .something-else-btn {
-      width: 70%;
-      max-width: 220px;
-      font-size: 2.2rem;
-      margin: 5px auto;
-      border-radius: 15px;
-      background-color: #6a512e;
-    }
-  
+
     /* F) Optional: If you want to ensure .container 
           is not fixed or avoid some forced positioning 
           from other media queries: 
