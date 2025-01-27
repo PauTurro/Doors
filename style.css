@@ -208,11 +208,7 @@
   }
   
   #logoutBtn:hover {
-<<<<<<< HEAD
     background-color: #6a512e;
-=======
-    background-color: var(--logout-button-hover-bg-color, #785b31);
->>>>>>> b9454bf2c32ab9cbcd60d5488d23e8fe60fd137b
   }
   
   #logoutBtn:active {
@@ -383,4 +379,16 @@
      0.6s delay so it appears after toggles 
   */
   animation: fadeInSlower 1.4s ease 0.2s forwards;
+}
+
+
+
+@media (max-width: 600px) {
+  /* Stack inputs and buttons vertically on mobile */
+  .auth-horizontal {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px; /* Adjust spacing as needed */
+  }
 }
