@@ -271,7 +271,7 @@
   
     /* E) Buttons: widen, increase text size, etc. */
       .login-btn {
-      width: 30%;
+      width: 18%;
       max-width: 200px;
       font-size: 1.1rem;
       margin: 0 auto; /* Center horizontally if block-level */
@@ -280,7 +280,7 @@
 
 
     button {
-      width: 10%;
+      width: 30%;
       max-width: 200px;
       font-size: 1.1rem;
       margin: 0 auto; /* Center horizontally if block-level */
