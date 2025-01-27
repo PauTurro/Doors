@@ -237,7 +237,7 @@
           reduce or remove box-shadow, etc.
     */
     .container {
-      width: 95% !important;        /* Slightly bigger on phones */
+      width: 100% !important;        /* Slightly bigger on phones */
       max-width: none !important;   /* Remove 800px constraint */
       margin: 20px auto;           /* Some top/bottom breathing room */
       padding: 20px;
@@ -265,16 +265,16 @@
     input[type="password"] {
       width: 60% !important;     /* Adapt the width for phone */
       max-width: 300px;         /* A reasonable limit on phone */
-      font-size: 1rem;          /* Slightly bigger text on phone */
+      font-size: 1.1rem;          /* Slightly bigger text on phone */
       border-radius: 15px;
     }
   
     /* E) Buttons: widen, increase text size, etc. */
     button,
     .login-btn {
-      width: 40%;
+      width: 30%;
       max-width: 200px;
-      font-size: 1rem;
+      font-size: 1.1rem;
       margin: 0 auto; /* Center horizontally if block-level */
       border-radius: 15px;
     }
