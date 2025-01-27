@@ -231,7 +231,7 @@
   
     /* B) Adjust the title size (optional) */
     .title {
-      font-size: 1.2rem !important; /* Maybe slightly smaller or bigger */
+      font-size: 1.5rem !important; /* Maybe slightly smaller or bigger */
       margin-bottom: 20px;
     }
   
@@ -241,15 +241,15 @@
       align-items: center;
       justify-content: center;
       gap: 16px; /* Increase or decrease as desired */
-      margin-top: 16px;
+      margin-top: 20px;
     }
     
     /* D) Make inputs fill more horizontal space on phone */
     input[type="email"],
     input[type="password"] {
-      width: 80% !important;     /* Adapt the width for phone */
+      width: 70% !important;     /* Adapt the width for phone */
       max-width: 300px;         /* A reasonable limit on phone */
-      font-size: 1rem;          /* Slightly bigger text on phone */
+      font-size: 2rem;          /* Slightly bigger text on phone */
       border-radius: 8px;
     }
   
@@ -258,9 +258,9 @@
     .login-btn {
       width: 60%;
       max-width: 200px;
-      font-size: 1rem;
+      font-size: 2rem;
       margin: 0 auto; /* Center horizontally if block-level */
-      border-radius: 20px;
+      border-radius: 18px;
     }
     
     /* F) Optional: If you want to ensure .container 
