@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  
+
   <!-- Disallows pinch-to-zoom -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 
@@ -31,16 +31,17 @@
 
   <!-- Optional CSS to help block pinch-zoom on modern browsers (Android/Chrome) -->
   <style>
-    /* 
-      This allows normal scrolling (pan-x pan-y) but blocks pinch gestures 
+    /*
+      Allows normal scrolling (pan-x pan-y) but blocks pinch gestures 
       in many browsers.
     */
     html, body {
       touch-action: pan-x pan-y;
-      margin: 0;           /* Remove default margin so body can reach top edge */
-      background-color: #FFF; /* Make background white to match status bar */
-      color: #000;         /* Example text color */
-      
+      margin: 0;
+      background-color: #FFF; /* White background to match status bar */
+      color: #000;
+      font-family: 'Nunito', sans-serif;
+
       /* Safe area for iOS notch/rounded corners */
       padding-top: env(safe-area-inset-top);
       padding-left: env(safe-area-inset-left);
@@ -57,64 +58,83 @@
         padding-bottom: constant(safe-area-inset-bottom);
       }
     }
+
+    /*
+      1) Keep the container invisible initially (opacity: 0).
+      2) We'll add a class (.fade-in) via JS to set opacity:1 and animate.
+    */
+    #appContainer {
+      opacity: 0;           /* Invisible initially */
+      transition: opacity 0.5s ease-in-out; /* 0.5s fade time (customize) */
+    }
+    /*
+      When we add this class from JS, the container transitions to opacity:1 
+    */
+    #appContainer.fade-in {
+      opacity: 1;
+    }
   </style>
 
   <!-- iOS Safari pinch-zoom workaround: prevent gesturestart/change/end -->
   <script>
-    
-document.addEventListener('gesturestart', function (e) {
-    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-
-              e.preventDefault();
-    }
+    document.addEventListener('gesturestart', function (e) {
+      if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+      }
     }, { passive: false });
 
-    
-document.addEventListener('gesturechange', function (e) {
-    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-
-              e.preventDefault();
-    }
+    document.addEventListener('gesturechange', function (e) {
+      if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+      }
     }, { passive: false });
 
-    
-document.addEventListener('gestureend', function (e) {
-    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-
-              e.preventDefault();
-    }
+    document.addEventListener('gestureend', function (e) {
+      if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+      }
     }, { passive: false });
   </script>
 </head>
+
 <body>
-  <div class="background">
-    <div class="container">
-      <!-- Title in Nunito -->
-      <h1 class="title" id="welcomeTitle">Welcome to the future</h1>
+  <!-- All content is wrapped inside #appContainer, which starts at opacity:0 -->
+  <div id="appContainer">
+    <div class="background">
+      <!-- 
+           1) Add an ID to your container 
+              (for toggling .logged-in in JS)
+      -->
+      <div class="container" id="containerEl">
+        <!-- Title in Nunito -->
+        <h1 class="title" id="welcomeTitle" style="display: none;">
+          Welcome to the future
+        </h1>
 
-      <!-- Auth Section (Login/Register) -->
-      <div id="authSection" class="auth-horizontal">
-        <input type="email" id="email" placeholder="Email" />
-        <input type="password" id="password" placeholder="Password" />
-        <button id="registerBtn" class="register-btn">Register</button>
-        <button id="loginBtn" class="login-btn">Go</button>
-      </div>
-
-      <!-- Control Section (Visible after login) -->
-      <div id="controlSection" style="display: none;">
-        <p id="tokenDisplay">
-          Your Token: <span id="token"></span>
-        </p>
-
-        <div class="toggle-buttons">
-          <button id="toggleDoor1" class="toggle-btn">Toggle Door 1</button>
-          <button id="toggleDoor2" class="toggle-btn">Toggle Door 2</button>
+        <!-- Auth Section (Login/Register) -->
+        <div id="authSection" class="auth-horizontal" style="display: none;">
+          <input type="email" id="email" placeholder="Email" />
+          <input type="password" id="password" placeholder="Password" />
+          <button id="registerBtn" class="register-btn">Register</button>
+          <button id="loginBtn" class="login-btn">Go</button>
         </div>
 
-        <button id="logoutBtn">Logout</button>
-      </div>
-    </div>
-  </div>
+        <!-- Control Section (Visible after login) -->
+        <div id="controlSection" style="display: none;">
+          <p id="tokenDisplay">
+            Your Token: <span id="token"></span>
+          </p>
+
+          <div class="toggle-buttons">
+            <button id="toggleDoor1" class="toggle-btn">Toggle Door 1</button>
+            <button id="toggleDoor2" class="toggle-btn">Toggle Door 2</button>
+          </div>
+
+          <button id="logoutBtn">Logout</button>
+        </div>
+      </div><!-- /#containerEl -->
+    </div><!-- /.background -->
+  </div><!-- /#appContainer -->
 
   <!-- Your JavaScript code, using ES Modules -->
   <script type="module">
@@ -139,7 +159,7 @@ document.addEventListener('gestureend', function (e) {
       onValue
     } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-    // 2. Firebase configuration (Use your real credentials)
+    // 2. Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDWMkL3P7OWlosSFXXRg8gvUQg6-7Y9uu8",
       authDomain: "esp32door-control.firebaseapp.com",
@@ -159,17 +179,19 @@ document.addEventListener('gestureend', function (e) {
     /************************************************
      *            DOM Element References
      ************************************************/
-    const authSection     = document.getElementById("authSection");
-    const controlSection  = document.getElementById("controlSection");
-    const emailInput      = document.getElementById("email");
-    const passwordInput   = document.getElementById("password");
-    const registerBtn     = document.getElementById("registerBtn");
-    const loginBtn        = document.getElementById("loginBtn");
-    const logoutBtn       = document.getElementById("logoutBtn");
-    const toggleDoorBtn1  = document.getElementById("toggleDoor1");
-    const toggleDoorBtn2  = document.getElementById("toggleDoor2");
-    const tokenDisplay    = document.getElementById("token");
-    const welcomeTitle    = document.getElementById("welcomeTitle");
+    const appContainer   = document.getElementById("appContainer");
+    const containerEl    = document.getElementById("containerEl"); // <-- Our container
+    const authSection    = document.getElementById("authSection");
+    const controlSection = document.getElementById("controlSection");
+    const emailInput     = document.getElementById("email");
+    const passwordInput  = document.getElementById("password");
+    const registerBtn    = document.getElementById("registerBtn");
+    const loginBtn       = document.getElementById("loginBtn");
+    const logoutBtn      = document.getElementById("logoutBtn");
+    const toggleDoorBtn1 = document.getElementById("toggleDoor1");
+    const toggleDoorBtn2 = document.getElementById("toggleDoor2");
+    const tokenDisplay   = document.getElementById("token");
+    const welcomeTitle   = document.getElementById("welcomeTitle");
 
     // Variable to store the device token
     let deviceToken = "";
@@ -191,41 +213,36 @@ document.addEventListener('gestureend', function (e) {
     // Check or create device token for the current user
     async function checkAndGenerateToken() {
       const user = auth.currentUser;
-      if (user) {
-        try {
-          const userTokenRef = ref(db, "users/" + user.uid + "/deviceToken");
-          const snapshot = await get(userTokenRef);
+      if (!user) return;
+      try {
+        const userTokenRef = ref(db, "users/" + user.uid + "/deviceToken");
+        const snapshot = await get(userTokenRef);
 
-          if (snapshot.exists()) {
-            deviceToken = snapshot.val();
-            console.log("Token already exists:", deviceToken);
-          } else {
-            deviceToken = generateToken();
-            await set(userTokenRef, deviceToken);
-            console.log("New token generated and saved:", deviceToken);
-          }
-          // Display the token in the UI
-          tokenDisplay.textContent = deviceToken;
-        } catch (error) {
-          console.error("Error checking or saving token:", error);
-          alert("Error generating token. Please try again.");
+        if (snapshot.exists()) {
+          deviceToken = snapshot.val();
+          console.log("Token already exists:", deviceToken);
+        } else {
+          deviceToken = generateToken();
+          await set(userTokenRef, deviceToken);
+          console.log("New token generated and saved:", deviceToken);
         }
-      } else {
-        alert("Please log in to generate a token.");
+        tokenDisplay.textContent = deviceToken; // Update UI
+      } catch (error) {
+        console.error("Error checking/saving token:", error);
+        alert("Error generating token. Please try again.");
       }
     }
 
-    // Update button states to match the door statuses
+    // Update door toggle buttons
     async function updateToggleButtons() {
-      if (deviceToken) {
-        await updateToggleButton(toggleDoorBtn1, "door1Status");
-        await updateToggleButton(toggleDoorBtn2, "door2Status");
-      }
+      if (!deviceToken) return;
+      await updateToggleButton(toggleDoorBtn1, "door1Status");
+      await updateToggleButton(toggleDoorBtn2, "door2Status");
     }
 
-    // Update a single toggle button (door 1 or door 2)
+    // Single door button update
     async function updateToggleButton(buttonElement, doorStatusKey) {
-      const doorStatusRef = ref(db, "devices/" + deviceToken + "/" + doorStatusKey);
+      const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
       const snapshot = await get(doorStatusRef);
 
       let currentStatus = "closed"; // Default
@@ -233,24 +250,22 @@ document.addEventListener('gestureend', function (e) {
       if (snapshot.exists()) {
         currentStatus = snapshot.val().status;
       } else {
-        // If no status in DB, set it to "closed" by default
+        // If no status, set "closed"
         await set(doorStatusRef, { status: "closed" });
       }
 
-      // Update the button text and classes
-      buttonElement.textContent = currentStatus === "open" ? "Open" : "Closed";
+      buttonElement.textContent = (currentStatus === "open") ? "Open" : "Closed";
       buttonElement.classList.toggle("closed", currentStatus === "closed");
       buttonElement.classList.toggle("open", currentStatus === "open");
     }
 
-    // Toggle door status (open <-> closed)
+    // Toggle door state
     async function toggleDoorStatus(buttonElement, doorStatusKey) {
       const user = auth.currentUser;
       if (!user) {
         alert("Please log in to send commands.");
         return;
       }
-
       if (!deviceToken) {
         console.error("Device token not found for user.");
         alert("Device token not found. Please log out and log in again.");
@@ -258,19 +273,17 @@ document.addEventListener('gestureend', function (e) {
       }
 
       try {
-        const doorStatusRef = ref(db, "devices/" + deviceToken + "/" + doorStatusKey);
+        const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
         const statusSnapshot = await get(doorStatusRef);
 
-        let newStatus = "open"; // Default toggle
+        let newStatus = "open"; // Default
         if (statusSnapshot.exists()) {
           const currentStatus = statusSnapshot.val().status;
           newStatus = (currentStatus === "open") ? "closed" : "open";
         }
 
         await set(doorStatusRef, { status: newStatus });
-
-        // Update the button text/class and inform the user
-        buttonElement.textContent = newStatus === "open" ? "Open" : "Closed";
+        buttonElement.textContent = (newStatus === "open") ? "Open" : "Closed";
         buttonElement.classList.toggle("closed", newStatus === "closed");
         buttonElement.classList.toggle("open", newStatus === "open");
 
@@ -280,17 +293,15 @@ document.addEventListener('gestureend', function (e) {
       }
     }
 
-    // Listen for real-time door status changes
+    // Listen for real-time door status
     function listenToDoorStatuses() {
-      if (deviceToken) {
-        listenToDoorStatus(toggleDoorBtn1, "door1Status");
-        listenToDoorStatus(toggleDoorBtn2, "door2Status");
-      }
+      if (!deviceToken) return;
+      listenToDoorStatus(toggleDoorBtn1, "door1Status");
+      listenToDoorStatus(toggleDoorBtn2, "door2Status");
     }
 
-    // Helper for attaching onValue listeners to door statuses
     function listenToDoorStatus(buttonElement, doorStatusKey) {
-      const doorStatusRef = ref(db, "devices/" + deviceToken + "/" + doorStatusKey);
+      const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
       onValue(doorStatusRef, (snapshot) => {
         if (snapshot.exists()) {
           const status = snapshot.val().status;
@@ -299,6 +310,23 @@ document.addEventListener('gestureend', function (e) {
           buttonElement.classList.toggle("open", status === "open");
         }
       });
+    }
+
+    // Handle logged-in UI setup
+    async function setupLoggedInUser() {
+      // 1. Generate/check device token
+      await checkAndGenerateToken();
+
+      // 2. Update toggle buttons
+      await updateToggleButtons();
+
+      // 3. Listen to door statuses
+      listenToDoorStatuses();
+
+      // 4. Show the control screen
+      authSection.style.display = "none";
+      controlSection.style.display = "block";
+      welcomeTitle.style.display = "none";
     }
 
     /************************************************
@@ -352,29 +380,29 @@ document.addEventListener('gestureend', function (e) {
     });
 
     /************************************************
-     *   Listen to Firebase Auth State (Skip Login)
+     *   Listen to Firebase Auth State
      ************************************************/
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
         console.log("User is logged in:", user.uid);
-        // Hide login, show control screen
-        authSection.style.display = "none";
-        controlSection.style.display = "block";
-        welcomeTitle.style.display = "none";
 
-        // Generate/check device token, then update doors
-        checkAndGenerateToken().then(() => {
-          updateToggleButtons();
-          listenToDoorStatuses();
-        });
+        // -- ADD .logged-in class so shadow is removed on desktop (in your CSS) --
+        containerEl.classList.add("logged-in");
+
+        await setupLoggedInUser();
       } else {
         console.log("User is not logged in.");
-        // Show login, hide control screen
         authSection.style.display = "flex";
         controlSection.style.display = "none";
         welcomeTitle.style.display = "block";
         tokenDisplay.textContent = "";
+
+        // -- REMOVE .logged-in for the login screen (shows shadow) --
+        containerEl.classList.remove("logged-in");
       }
+
+      // Fade in the container now that we know the auth state
+      appContainer.classList.add("fade-in");
     });
   </script>
 </body>
