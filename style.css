@@ -215,70 +215,70 @@
     transform: scale(0.98);
   }
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   @media screen and (max-width: 600px) {
-    /* A) Container */
+    /* 
+       A) Make the container full width, 
+          reduce or remove box-shadow, etc.
+    */
     .container {
-      width: 95% !important;
-      max-width: none !important;
-      margin: 20px auto;
+      width: 95% !important;        /* Slightly bigger on phones */
+      max-width: none !important;   /* Remove 800px constraint */
+      margin: 20px auto;           /* Some top/bottom breathing room */
       padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-      position: static !important; /* in case you want it non-fixed */
+      border-radius: 15px;         /* Smaller border radius for mobile */
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Lighter shadow */
     }
   
-    /* B) Title size */
+    /* B) Adjust the title size (optional) */
     .title {
-      font-size: 5rem !important;
+      font-size: 6rem !important; /* Maybe slightly smaller or bigger */
       margin-bottom: 20px;
     }
   
-    /* C) Auth horizontal (stack) */
+    /* C) Stack the email & password fields vertically */
     .auth-horizontal {
-      flex-direction: column;
+      flex-direction: column; 
       align-items: center;
       justify-content: center;
-      gap: 16px;
-      margin-top: 20px;
+      gap: 16px; /* Increase or decrease as desired */
+      margin-top: 16px;
     }
-  
-    /* D) Inputs */
+    
+    /* D) Make inputs fill more horizontal space on phone */
     input[type="email"],
     input[type="password"] {
-      width: 70% !important;
-      max-width: 300px;
-      font-size: 2rem;
-      border-radius: 20px;
+      width: 80% !important;     /* Adapt the width for phone */
+      max-width: 300px;         /* A reasonable limit on phone */
+      font-size: 1rem;          /* Slightly bigger text on phone */
+      border-radius: 8px;
     }
   
-    /* ----------------------------------
-       E) Separate Button Styles
-       ---------------------------------- */
-    
-    /* Remove or comment out the old combined rule:
-       button, .login-btn { ... } */
-  
-    /* 1) Login button */
+    /* E) Buttons: widen, increase text size, etc. */
+    button,
     .login-btn {
       width: 60%;
       max-width: 200px;
-      font-size: 2rem;
-      margin: 0 auto;
-      border-radius: 10px;
-      background-color: #f9c836;
+      font-size: 1rem;
+      margin: 0 auto; /* Center horizontally if block-level */
+      border-radius: 20px;
     }
-  
-    /* 2) Register button */
-    .register-btn {
-      width: 50%;
-      max-width: 180px;
-      font-size: 2rem;
-      margin: 10px auto;
-      border-radius: 10px;
-      background-color: #272726;
-    }
-  
-
+    
     /* F) Optional: If you want to ensure .container 
           is not fixed or avoid some forced positioning 
           from other media queries: 
