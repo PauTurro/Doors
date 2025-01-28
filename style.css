@@ -230,7 +230,6 @@
 
 
 
-
   @media screen and (max-width: 600px) {
     /* 
        A) Make the container full width, 
@@ -239,17 +238,25 @@
     .container {
       width: 100% !important;        /* Slightly bigger on phones */
       max-width: none !important;   /* Remove 800px constraint */
-      margin: 50px auto;           /* Some top/bottom breathing room */
+      margin: 50px auto;            /* Some top/bottom breathing room */
       padding: 20px;
-      border-radius: 15px;         /* Smaller border radius for mobile */
+      border-radius: 15px;          /* Smaller border radius for mobile */
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Lighter shadow */
     }
-  
-    /* B) Adjust the title size (optional) */
+
+    /* B) Adjust the title size and position */
     .title {
-      font-size: 2rem !important; /* Maybe slightly smaller or bigger */
+      font-size: 2rem !important;
+      margin-top: 100px !important;  /* Pushes the title lower on the screen */
       margin-bottom: 20px;
+      position: relative;
+      left: 0;
+      max-width: 180px;            /* Limit width so 'future' wraps to next line */
+      white-space: normal;         /* Allow wrapping */
+      overflow-wrap: break-word;   /* Ensures words wrap properly */
     }
+
+
   
     /* C) Stack the email & password fields vertically */
     .auth-horizontal {
