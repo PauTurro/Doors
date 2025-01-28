@@ -15,11 +15,6 @@
     padding: 0;
   }
   
-  /* Remove iOS tap highlight color */
-  body, button, input, textarea, select {
-    -webkit-tap-highlight-color: transparent;
-  }
-  
   /* ===========================
      2. Body and Background
      =========================== */
@@ -87,7 +82,7 @@
     padding: 8px;
     font-size: 0.75rem;
     font-weight: 700;
-    border: 3px solid #ffd24b;
+    border: 2px solid #ffe87f;
     border-radius: 10px;
     background-color: var(--input-bg-color, #fffdf2);
     color: var(--input-text-color, #785b31);
@@ -97,7 +92,7 @@
   
   input[type="email"]:focus,
   input[type="password"]:focus {
-    border-color: #ffd24b;
+    border-color: #ffcf3f;
   }
   
   /* ===========================
@@ -220,92 +215,15 @@
     transform: scale(0.98);
   }
   
-  @media screen and (max-width: 600px) {
-    /* Remove scrolling entirely on small screens */
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden !important; /* No scrolling */
-    }
-  
-    /* Keep the fixed background */
-    body {
-      background-attachment: fixed;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-  
-    /* Make the container fill the screen (no scroll) */
-    .container {
-      width: 100% !important;
-      max-width: none !important;
-      height: 100%;
-      margin: 0 auto;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: none; /* Remove shadow if desired */
-      position: static !important;
-      overflow: hidden; /* Prevent overflow scroll */
-    }
-  
-    /* Adjust the title size and position */
-    .title {
-      font-size: 2.1rem !important;
-      margin-top: 20px !important;
-      margin-bottom: 20px;
-      position: relative;
-      left: 0;
-      max-width: 300px;
-      white-space: normal;
-      overflow-wrap: break-word;
-      text-align: center;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  
-    /* Stack the email & password fields vertically */
+  /* ===========================
+     14. Responsive Design (Phones <=600px)
+     =========================== */
+  @media (max-width: 600px) {
     .auth-horizontal {
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 11px;
-      margin-top: 16px;
+      flex-wrap: nowrap;
     }
-  
-    /* Make inputs fill more space on phone + border width adjustment */
-    input[type="email"],
-    input[type="password"] {
-      width: 70% !important;
-      max-width: 300px;
-      font-size: 1.15rem;
-      border-radius: 15px;
-      border: 3px solid #ffcf3f;
-      outline: none;
-      transition: border-color 0.3s ease;
-    }
-  
-    input[type="email"]:focus,
-    input[type="password"]:focus {
-      border-color: #ffcf3f;
-    }
-  
-    /* Buttons: widen, increase text size, etc. */
-    .login-btn {
-      width: 14%;
-      max-width: 200px;
-      font-size: 1.3rem;
-      margin: 0 auto;
-      border-radius: 18px;
-    }
-  
-    button {
-      width: 30%;
-      max-width: 200px;
-      font-size: 1.3rem;
-      margin: 0 auto;
-      border-radius: 18px;
+    .container {
+      overflow-x: auto;
     }
   }
   
@@ -339,11 +257,7 @@
     animation: fadeInSlower 1s ease forwards;
   }
   
-  /* 
-     Autofill Fix: 
-     Tries to override iOS Safari's yellow background. 
-     Not always guaranteed in a PWA, but this is the correct attempt.
-  */
+  /* Autofill Fix */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
@@ -409,8 +323,9 @@
   }
   
   /* ===========================
-     17. Desktop (>=769px)
-     Remove box styling ONLY if .logged-in
+     17. Desktop (>=769px), 
+         remove box styling 
+         ONLY if .logged-in
      =========================== */
   @media (min-width: 769px) {
     .container.logged-in {
@@ -425,27 +340,43 @@
   }
   
   /**********************************************
-   *  FADE IN: Token, Toggle Buttons, and Logout
-   **********************************************/
-  
-  /* 1) Token Display (appears first, small movement) */
-  #tokenDisplay {
-    opacity: 0;
-    transform: translateY(3px);
-    animation: fadeInSlower 0.8s ease 0s forwards; /* 0.8s, starts at 0s */
-  }
-  
-  /* 2) Toggle Buttons Container (slight delay after token) */
-  .toggle-buttons {
-    opacity: 0;
-    transform: translateY(3px);
-    animation: fadeInSlower 0.8s ease 0.2s forwards; /* 0.8s, starts at 0.2s */
-  }
-  
-  /* 3) Logout Button (appears last, a bit more delay) */
-  #logoutBtn {
-    opacity: 0;
-    transform: translateY(0px);
-    animation: fadeInSlower 1.4s ease 0.2s forwards; /* 1.4s, starts at 0.2s */
-  }
-  
+ *  FADE IN: Token, Toggle Buttons, and Logout
+ **********************************************/
+
+/* 
+   We'll reuse fadeInSlower keyframes, 
+   but move only 3px and stagger their start
+*/
+
+/* 1) Token Display (appears first, small movement) */
+#tokenDisplay {
+  opacity: 0;
+  transform: translateY(3px);
+  /* 
+     0.8s duration, ease timing, 
+     0s delay, fill 'forwards' 
+  */
+  animation: fadeInSlower 0.8s ease 0s forwards;
+}
+
+/* 2) Toggle Buttons Container (slight delay after token) */
+.toggle-buttons {
+  opacity: 0;
+  transform: translateY(3px);
+  /* 
+     0.7s duration, ease timing, 
+     0.2s delay to start after token 
+  */
+  animation: fadeInSlower 0.8s ease 0.2s forwards;
+}
+
+/* 3) Logout Button (appears last, a bit more delay) */
+#logoutBtn {
+  opacity: 0;
+  transform: translateY(0px);
+  /* 
+     0.8s duration, ease timing, 
+     0.6s delay so it appears after toggles 
+  */
+  animation: fadeInSlower 1.4s ease 0.2s forwards;
+}
