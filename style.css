@@ -89,7 +89,7 @@
     font-weight: 700;
     border: 3px solid #ffd24b;
     border-radius: 10px;
-    background-color: var(--input-bg-color, #fffdf2);
+    background-color: var(--input-bg-color, #fffdf200);
     color: var(--input-text-color, #785b31);
     outline: none;
     transition: border-color 0.3s ease;
