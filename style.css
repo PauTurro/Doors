@@ -229,7 +229,6 @@
 
 
 
-
   @media screen and (max-width: 600px) {
     /* 
        A) Make the container full width, 
@@ -246,14 +245,17 @@
 
     /* B) Adjust the title size and position */
     .title {
-      font-size: 2rem !important;
-      margin-top: 100px !important;  /* Pushes the title lower on the screen */
+      font-size: 2.1rem !important;
+      margin-top: 60px !important;  /* Pushes the title lower on the screen */
       margin-bottom: 20px;
       position: relative;
       left: 0;
-      max-width: 180px;            /* Limit width so 'future' wraps to next line */
+      max-width: 200px;            /* Limit width so 'future' wraps to next line */
       white-space: normal;         /* Allow wrapping */
       overflow-wrap: break-word;   /* Ensures words wrap properly */
+      text-align: center;          /* Center the text */
+      margin-left: auto;          /* Horizontally center the block */
+      margin-right: auto;
     }
 
 
