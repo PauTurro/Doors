@@ -246,11 +246,11 @@
     /* B) Adjust the title size and position */
     .title {
       font-size: 2.1rem !important;
-      margin-top: 60px !important;  /* Pushes the title lower on the screen */
+      margin-top: 40px !important;  /* Pushes the title lower on the screen */
       margin-bottom: 20px;
       position: relative;
       left: 0;
-      max-width: 200px;            /* Limit width so 'future' wraps to next line */
+      max-width: 300px;            /* Limit width so 'future' wraps to next line */
       white-space: normal;         /* Allow wrapping */
       overflow-wrap: break-word;   /* Ensures words wrap properly */
       text-align: center;          /* Center the text */
