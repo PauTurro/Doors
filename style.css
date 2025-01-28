@@ -82,7 +82,7 @@
     padding: 8px;
     font-size: 0.75rem;
     font-weight: 700;
-    border: 3px solid #ffcf3f;
+    border: 3px solid #ffe570;
     border-radius: 10px;
     background-color: var(--input-bg-color, #fffdf2);
     color: var(--input-text-color, #785b31);
@@ -92,7 +92,7 @@
   
   input[type="email"]:focus,
   input[type="password"]:focus {
-    border-color: #ffcf3f;
+    border-color: #ffe570;
   }
   
   /* ===========================
@@ -227,16 +227,30 @@
 
 
 
-
   @media screen and (max-width: 600px) {
-    /* Added fixed background */
+    /* Fix for backgrounds on mobile devices, including iOS (which ignores background-attachment: fixed) */
+    html,
     body {
-      background-attachment: fixed;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+  
+    /* Use a pseudo-element to fix the background in place */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #ffcf3f; /* use your background color or an image here */
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
+      z-index: -1; /* stay behind other content */
     }
-
+  
     /* 
        A) Make the container full width, 
           reduce or remove box-shadow, etc.
@@ -248,7 +262,8 @@
       padding: 20px;
       border-radius: 15px;          /* Smaller border radius for mobile */
       box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Lighter shadow */
-      position: static !important;
+      position: relative !important;
+      z-index: 0; /* to ensure it’s above the pseudo-element */
     }
   
     /* B) Adjust the title size and position */
@@ -274,7 +289,7 @@
       gap: 11px; /* Increase or decrease as desired */
       margin-top: 16px;
     }
-    
+  
     /* D) Make inputs fill more horizontal space on phone + border width adjustment */
     input[type="email"],
     input[type="password"] {
@@ -282,14 +297,14 @@
       max-width: 300px;         /* A reasonable limit on phone */
       font-size: 1.15rem;       /* Slightly bigger text on phone */
       border-radius: 15px;
-      border: 3px solid #ffe87f; /* Simple adjustable border thickness */
+      border: 3px solid #ffcf3f; /* Simple adjustable border thickness */
       outline: none;
       transition: border-color 0.3s ease;
     }
   
     input[type="email"]:focus,
     input[type="password"]:focus {
-      border-color: #ffe87f;      /* Highlight on focus */
+      border-color: #ffcf3f;      /* Highlight on focus */
     }
   
     /* E) Buttons: widen, increase text size, etc. */
@@ -310,10 +325,6 @@
     }
   }
   
-
-
-
-
 
 
 
