@@ -72,29 +72,42 @@
     margin-top: 20px;
   }
   
-  /* ===========================
-     6. Input Fields
-     =========================== */
-  input[type="email"],
-  input[type="password"] {
-    width: 250px;
-    max-width: 250px;
-    padding: 8px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    border: 3px solid #ffd24b;
-    border-radius: 10px;
-    background-color: var(--input-bg-color, #fffdf2);
-    color: var(--input-text-color, #785b31);
-    outline: none;
-    transition: border-color 0.3s ease;
-  }
-  
-  input[type="email"]:focus,
-  input[type="password"]:focus {
-    border-color: #ffd24b;
-  }
-  
+
+
+
+/* ===========================
+   6. Input Fields
+    =========================== */
+    input[type="email"],
+    input[type="password"] {
+      width: 250px;
+      max-width: 250px;
+      padding: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 3px solid #ccc; /* Changed from #ffd24b to #ccc to reduce yellowish look */
+      border-radius: 10px;
+      background-color: #fff; /* Changed from #fffdf2 to #fff */
+      color: var(--input-text-color, #785b31);
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+   
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      border-color: #ccc; /* Changed from #ffd24b to #ccc */
+    }
+
+
+
+
+
+
+
+
+
+
+
   /* ===========================
      7. Buttons (General)
      =========================== */
