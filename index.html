@@ -78,6 +78,23 @@
     html {
       -webkit-tap-highlight-color: transparent;
     }
+
+    /* (LINE ~78) - ADDED to remove Autofill yellow background */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+      box-shadow: 0 0 0 1000px #fff inset !important;
+      -webkit-text-fill-color: #000 !important;
+      transition: background-color 9999s ease-in-out 0s;
+    }
+
+    /* (LINE ~87) - OPTIONAL: Remove focus outlines if desired */
+    input:focus,
+    button:focus {
+      outline: none !important;
+      box-shadow: none !important;
+    }
   </style>
 
   <!-- iOS Safari pinch-zoom workaround: prevent gesturestart/change/end -->
