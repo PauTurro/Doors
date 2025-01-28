@@ -82,7 +82,7 @@
     padding: 8px;
     font-size: 0.75rem;
     font-weight: 700;
-    border: 2px solid #ffe87f;
+    border: 3px solid #ffcf3f;
     border-radius: 10px;
     background-color: var(--input-bg-color, #fffdf2);
     color: var(--input-text-color, #785b31);
