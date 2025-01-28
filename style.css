@@ -275,14 +275,14 @@
       max-width: 300px;         /* A reasonable limit on phone */
       font-size: 1.15rem;       /* Slightly bigger text on phone */
       border-radius: 15px;
-      border: 3px solid #ffce39; /* Simple adjustable border thickness */
+      border: 3px solid #ffe87f; /* Simple adjustable border thickness */
       outline: none;
       transition: border-color 0.3s ease;
     }
   
     input[type="email"]:focus,
     input[type="password"]:focus {
-      border-color: #ffce39;      /* Highlight on focus */
+      border-color: #ffe87f;      /* Highlight on focus */
     }
   
     /* E) Buttons: widen, increase text size, etc. */
