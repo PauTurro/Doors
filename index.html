@@ -32,7 +32,7 @@
   <!-- Optional CSS to help block pinch-zoom on modern browsers (Android/Chrome) -->
   <style>
     /*
-      Allows normal scrolling (pan-x pan-y) but blocks pinch gestures
+      Allows normal scrolling (pan-x pan-y) but blocks pinch gestures 
       in many browsers.
     */
     html, body {
@@ -68,15 +68,10 @@
       transition: opacity 0.5s ease-in-out; /* 0.5s fade time (customize) */
     }
     /*
-      When we add this class from JS, the container transitions to opacity:1
+      When we add this class from JS, the container transitions to opacity:1 
     */
     #appContainer.fade-in {
       opacity: 1;
-    }
-
-    /* (LINE ~71) - ADDED to remove iOS tap highlight */
-    html {
-      -webkit-tap-highlight-color: transparent;
     }
   </style>
 
