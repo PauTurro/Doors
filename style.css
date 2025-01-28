@@ -82,7 +82,7 @@
     padding: 8px;
     font-size: 0.75rem;
     font-weight: 700;
-    border: 3px solid #ffe570;
+    border: 3px solid #ffd24b;
     border-radius: 10px;
     background-color: var(--input-bg-color, #fffdf2);
     color: var(--input-text-color, #785b31);
@@ -92,7 +92,7 @@
   
   input[type="email"]:focus,
   input[type="password"]:focus {
-    border-color: #ffe570;
+    border-color: #ffd24b;
   }
   
   /* ===========================
@@ -223,50 +223,38 @@
 
 
 
-
-
-
-
   @media screen and (max-width: 600px) {
-    /* Fix for backgrounds on mobile devices, including iOS (which ignores background-attachment: fixed) */
-    html,
-    body {
+    /* Reset margin/padding on body/html */
+    html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
     }
   
-    /* Use a pseudo-element to fix the background in place */
-    body::before {
-      content: '';
-      position: fixed;
+    /* Make the container fill the entire viewport and fix it in place */
+    .container {
+      position: fixed !important;
       top: 0;
       left: 0;
-      right: 0;
-      bottom: 0;
-      background: #ffcf3f; /* use your background color or an image here */
+      width: 100vw !important;
+      height: 100vh !important;
+      margin: 0 !important;
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 999;
+  
+      /* Your desired background. Color or image. */
+      background: #ffcf3f;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      z-index: -1; /* stay behind other content */
+  
+      /* If you want a border radius or box shadow, keep them, 
+         otherwise set them to none for a full-screen effect. */
+      border-radius: 0;
+      box-shadow: none;
     }
   
-    /* 
-       A) Make the container full width, 
-          reduce or remove box-shadow, etc.
-    */
-    .container {
-      width: 100% !important;        /* Slightly bigger on phones */
-      max-width: none !important;   /* Remove 800px constraint */
-      margin: 50px auto;            /* Some top/bottom breathing room */
-      padding: 20px;
-      border-radius: 15px;          /* Smaller border radius for mobile */
-      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Lighter shadow */
-      position: relative !important;
-      z-index: 0; /* to ensure it’s above the pseudo-element */
-    }
-  
-    /* B) Adjust the title size and position */
+    /* Adjust the title size and position if necessary */
     .title {
       font-size: 2.1rem !important;
       margin-top: 40px !important;  /* Pushes the title lower on the screen */
@@ -281,16 +269,16 @@
       margin-right: auto;
     }
   
-    /* C) Stack the email & password fields vertically */
+    /* Stack the email & password fields vertically */
     .auth-horizontal {
-      flex-direction: column; 
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 11px; /* Increase or decrease as desired */
       margin-top: 16px;
     }
   
-    /* D) Make inputs fill more horizontal space on phone + border width adjustment */
+    /* Make inputs fill more horizontal space on phone + border width adjustment */
     input[type="email"],
     input[type="password"] {
       width: 70% !important;     /* Adapt the width for phone */
@@ -307,7 +295,7 @@
       border-color: #ffcf3f;      /* Highlight on focus */
     }
   
-    /* E) Buttons: widen, increase text size, etc. */
+    /* Buttons: widen, increase text size, etc. */
     .login-btn {
       width: 14%;
       max-width: 200px;
@@ -325,9 +313,6 @@
     }
   }
   
-
-
-
 
 
 
