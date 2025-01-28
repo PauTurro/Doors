@@ -1,4 +1,4 @@
-/* ===========================
+ /* =========================== 
    1. Basic Reset
    =========================== */
    * {
@@ -448,4 +448,3 @@
     transform: translateY(0px);
     animation: fadeInSlower 1.4s ease 0.2s forwards; /* 1.4s, starts at 0.2s */
   }
-  
