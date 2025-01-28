@@ -223,49 +223,59 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
   @media screen and (max-width: 600px) {
-    /* Reset margin/padding on body/html */
+    /* Remove scrolling entirely on small screens */
     html, body {
       margin: 0;
       padding: 0;
+      height: 100%;
+      overflow: hidden !important; /* No scrolling */
     }
   
-    /* Make the container fill the entire viewport and fix it in place */
-    .container {
-      position: fixed !important;
-      top: 0;
-      left: 0;
-      width: 100vw !important;
-      height: 100vh !important;
-      margin: 0 !important;
-      padding: 20px;
-      overflow-y: auto;
-      z-index: 999;
-  
-      /* Your desired background. Color or image. */
-      background: #ffcf3f;
+    /* Keep the fixed background */
+    body {
+      background-attachment: fixed;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-  
-      /* If you want a border radius or box shadow, keep them, 
-         otherwise set them to none for a full-screen effect. */
-      border-radius: 0;
-      box-shadow: none;
     }
   
-    /* Adjust the title size and position if necessary */
+    /* Make the container fill the screen (no scroll) */
+    .container {
+      width: 100% !important;
+      max-width: none !important;
+      height: 100%;
+      margin: 0 auto;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: none; /* Remove shadow if desired */
+      position: static !important;
+      overflow: hidden; /* Prevent overflow scroll */
+    }
+  
+    /* Adjust the title size and position */
     .title {
       font-size: 2.1rem !important;
-      margin-top: 40px !important;  /* Pushes the title lower on the screen */
+      margin-top: 20px !important;
       margin-bottom: 20px;
       position: relative;
       left: 0;
-      max-width: 300px;            /* Limit width so 'future' wraps to next line */
-      white-space: normal;         /* Allow wrapping */
-      overflow-wrap: break-word;   /* Ensures words wrap properly */
-      text-align: center;          /* Center the text */
-      margin-left: auto;           /* Horizontally center the block */
+      max-width: 300px;
+      white-space: normal;
+      overflow-wrap: break-word;
+      text-align: center;
+      margin-left: auto;
       margin-right: auto;
     }
   
@@ -274,25 +284,25 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 11px; /* Increase or decrease as desired */
+      gap: 11px;
       margin-top: 16px;
     }
   
-    /* Make inputs fill more horizontal space on phone + border width adjustment */
+    /* Make inputs fill more space on phone + border width adjustment */
     input[type="email"],
     input[type="password"] {
-      width: 70% !important;     /* Adapt the width for phone */
-      max-width: 300px;         /* A reasonable limit on phone */
-      font-size: 1.15rem;       /* Slightly bigger text on phone */
+      width: 70% !important;
+      max-width: 300px;
+      font-size: 1.15rem;
       border-radius: 15px;
-      border: 3px solid #ffcf3f; /* Simple adjustable border thickness */
+      border: 3px solid #ffcf3f;
       outline: none;
       transition: border-color 0.3s ease;
     }
   
     input[type="email"]:focus,
     input[type="password"]:focus {
-      border-color: #ffcf3f;      /* Highlight on focus */
+      border-color: #ffcf3f;
     }
   
     /* Buttons: widen, increase text size, etc. */
@@ -300,7 +310,7 @@
       width: 14%;
       max-width: 200px;
       font-size: 1.3rem;
-      margin: 0 auto; /* Center horizontally if block-level */
+      margin: 0 auto;
       border-radius: 18px;
     }
   
@@ -313,6 +323,7 @@
     }
   }
   
+
 
 
 
