@@ -228,8 +228,15 @@
 
 
 
-
   @media screen and (max-width: 600px) {
+    /* Added fixed background */
+    body {
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
     /* 
        A) Make the container full width, 
           reduce or remove box-shadow, etc.
