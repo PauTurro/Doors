@@ -1,4 +1,4 @@
- /* =========================== 
+/* =========================== 
    1. Basic Reset
    =========================== */
    * {
@@ -139,6 +139,7 @@
   /* ===========================
      9. Control Section
      =========================== */
+  /* ID: controlSection - Container for additional control elements (e.g., toggles, settings) */
   #controlSection {
     margin-top: 20px;
   }
@@ -146,6 +147,7 @@
   /* ===========================
      10. Token Display
      =========================== */
+  /* ID: tokenDisplay - Displays the user token information; customize for text size, color, etc. */
   #tokenDisplay {
     font-size: 0.8rem;
     font-weight: 700;
@@ -196,6 +198,7 @@
   /* ===========================
      13. Logout Button
      =========================== */
+  /* ID: logoutBtn - Logout button element with hover and active animations */
   #logoutBtn {
     margin-top: 30px;
     width: 100px;
@@ -393,6 +396,7 @@
   /* ===========================
      16. Container Fade-in from JS
      =========================== */
+  /* ID: appContainer - Main application container that fades in when ready */
   #appContainer {
     opacity: 0;              /* Start invisible */
     pointer-events: none;    /* No interaction while invisible */
@@ -449,3 +453,47 @@
     transform: translateY(0px);
     animation: fadeInSlower 1.4s ease 0.2s forwards; /* 1.4s, starts at 0.2s */
   }
+  
+  /* ============================================================
+     Custom Mobile Personalization Section
+     ------------------------------------------------------------
+     Use the following custom properties to personalize the 
+     phone screen version:
+       --mobile-button-padding       : Button padding
+       --mobile-button-font-size     : Button font size
+       --mobile-button-border-radius : Button border radius
+       --mobile-button-margin        : Button margin
+       --mobile-token-font-size      : Token display font size
+       --mobile-token-text-color     : Token text color
+       --mobile-token-margin         : Token margin
+       --mobile-container-padding    : Container padding
+       --mobile-container-border-radius : Container border radius
+     Adjust these values as needed for your design.
+  ============================================================ */
+  @media screen and (max-width: 600px) {
+    /* Custom button styles for mobile */
+    button,
+    .login-btn,
+    .toggle-btn,
+    #logoutBtn {
+      padding: var(--mobile-button-padding, 10px 15px) !important;
+      font-size: var(--mobile-button-font-size, 1.2rem) !important;
+      border-radius: var(--mobile-button-border-radius, 20px) !important;
+      margin: var(--mobile-button-margin, 5px auto) !important;
+    }
+    
+    /* Custom token text styles for mobile */
+    #tokenDisplay {
+      font-size: var(--mobile-token-font-size, 1rem) !important;
+      color: var(--mobile-token-text-color, #a070af) !important;
+      text-align: center !important;
+      margin: var(--mobile-token-margin, 10px auto) !important;
+    }
+    
+    /* Custom container adjustments for mobile */
+    .container {
+      padding: var(--mobile-container-padding, 15px) !important;
+      border-radius: var(--mobile-container-border-radius, 10px) !important;
+    }
+  }
+  
