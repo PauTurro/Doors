@@ -185,6 +185,12 @@
       if (document.getElementById("logoutBtn")) {
         document.getElementById("logoutBtn").textContent = translations.logoutBtn || "Logout";
       }
+      if (document.getElementById("doorOpen")) {
+        document.getElementById("doorOpen").textContent = translations.doorOpen || "Open";
+      }
+      if (document.getElementById("doorClosed")) {
+         document.getElementById("doorClosed").textContent = translations.doorClosed || "Closed";
+      }
       // Optionally update the token display label if provided.
       const tokenDisplay = document.getElementById("tokenDisplay");
       if (tokenDisplay && translations.tokenLabel) {

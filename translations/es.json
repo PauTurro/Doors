@@ -6,7 +6,7 @@
   "loginBtn": "Entrar",
   "toggleDoor1": "Alternar Puerta 1",
   "toggleDoor2": "Alternar Puerta 2",
-  "logoutBtn": "Cerrar sesión",
+  "logoutBtn": "Salir",
   "tokenLabel": "Tu Token: ",
   "doorOpen": "Abierta",
   "doorClosed": "Cerrada"
