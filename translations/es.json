@@ -1,9 +1,9 @@
 {
   "welcomeTitle": "Bienvenido al futuro",
-  "emailPlaceholder": "Correo electrónico",
+  "emailPlaceholder": "E-mail",
   "passwordPlaceholder": "Contraseña",
-  "registerBtn": "Registrar",
-  "loginBtn": "Iniciar sesión",
+  "registerBtn": "Registrarse",
+  "loginBtn": "Entrar",
   "toggleDoor1": "Alternar Puerta 1",
   "toggleDoor2": "Alternar Puerta 2",
   "logoutBtn": "Cerrar sesión",

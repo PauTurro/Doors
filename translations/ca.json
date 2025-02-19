@@ -1,12 +1,12 @@
 {
   "welcomeTitle": "Benvingut al futur",
-  "emailPlaceholder": "Correu electrònic",
+  "emailPlaceholder": "E-mail",
   "passwordPlaceholder": "Contrasenya",
-  "registerBtn": "Registrar",
+  "registerBtn": "Registrar-se",
   "loginBtn": "Accedir",
   "toggleDoor1": "Alternar Porta 1",
   "toggleDoor2": "Alternar Porta 2",
-  "logoutBtn": "Tanca sessió",
+  "logoutBtn": "Surt",
   "tokenLabel": "El teu token: ",
   "doorOpen": "Oberta",
   "doorClosed": "Tancada"
