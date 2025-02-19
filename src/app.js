@@ -35,11 +35,7 @@ import {
   ref,
   set,
   get,
-  onValue,
-  query,
-  orderByChild,
-  equalTo,
-  push
+  onValue
 } from "firebase/database";
 
 // Firebase configuration with your credentials
@@ -60,13 +56,12 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 
 // ----------------------------------------
-// 3. Global Variables: Device Token & Device ID
+// Global Variable for Device Token
 // ----------------------------------------
 let deviceToken = '';
-let deviceId = null; // Will store the device node key from /devices
 
 // ----------------------------------------
-// 4. Firebase Auth & DB Helper Functions
+// 3. Firebase Auth & DB Helper Functions
 // ----------------------------------------
 export function registerUser(email, password) {
   return createUserWithEmailAndPassword(auth, email, password);
@@ -100,7 +95,7 @@ export function onDataChangeListener(path, callback) {
 }
 
 // ----------------------------------------
-// 5. DOM Elements
+// 4. DOM Elements
 // ----------------------------------------
 const appContainer    = document.getElementById('appContainer');
 const containerEl     = document.getElementById('containerEl'); // <-- Using ID instead of querySelector
@@ -117,7 +112,7 @@ const tokenDisplay    = document.getElementById('token');
 const welcomeTitle    = document.getElementById('welcomeTitle');
 
 // ----------------------------------------
-// 6. Translation Loading & Application
+// 5. Translation Loading & Application
 // ----------------------------------------
 let translations = {};
 
@@ -164,7 +159,7 @@ const userLanguage = navigator.language ? navigator.language.split("-")[0] : "en
 loadTranslations(userLanguage);
 
 // ----------------------------------------
-// 7. Helper Function: Generate Random Token
+// 6. Helper Function: Generate Random Token
 // ----------------------------------------
 function generateToken() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -176,7 +171,7 @@ function generateToken() {
 }
 
 // ----------------------------------------
-// 8. Check/Create Device Token for User
+// 7. Check/Create Device Token for User
 // ----------------------------------------
 async function checkAndGenerateToken() {
   const user = auth.currentUser;
@@ -200,52 +195,23 @@ async function checkAndGenerateToken() {
 }
 
 // ----------------------------------------
-// 9. Load or Create Device Node for Sharing
-// ----------------------------------------
-async function loadDevice() {
-  if (!deviceToken) return;
-  const devicesRef = ref(db, 'devices');
-  // Query for a device node with deviceToken matching the user's token
-  const deviceQuery = query(devicesRef, orderByChild('deviceToken'), equalTo(deviceToken));
-  const snapshot = await get(deviceQuery);
-  if (snapshot.exists()) {
-    // If found, use the first matching device node's key.
-    snapshot.forEach((childSnapshot) => {
-      deviceId = childSnapshot.key;
-      console.log("Device found:", deviceId);
-    });
-  } else {
-    // If not found, create a new device node.
-    const newDeviceRef = push(devicesRef);
-    deviceId = newDeviceRef.key;
-    await set(newDeviceRef, {
-      deviceToken: deviceToken,
-      door1Status: { status: 'closed' },
-      door2Status: { status: 'closed' }
-    });
-    console.log("New device created:", deviceId);
-  }
-}
-
-// ----------------------------------------
-// 10. Update Toggle Buttons (Door Status)
+// 8. Update Toggle Buttons (Door Status)
 // ----------------------------------------
 async function updateToggleButtons() {
-  if (deviceId) {
+  if (deviceToken) {
     await updateToggleButton(toggleDoorBtn1, 'door1Status');
     await updateToggleButton(toggleDoorBtn2, 'door2Status');
   }
 }
 
 async function updateToggleButton(buttonElement, doorStatusKey) {
-  if (!deviceId) return;
-  const doorStatusRef = ref(db, `devices/${deviceId}/${doorStatusKey}`);
+  const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
   const snapshot = await get(doorStatusRef);
   let currentStatus = 'closed'; // Default
   if (snapshot.exists()) {
     currentStatus = snapshot.val().status;
   } else {
-    // If no status exists, initialize it to "closed"
+    // If no status, set "closed"
     await set(doorStatusRef, { status: 'closed' });
   }
   buttonElement.textContent = (currentStatus === 'open')
@@ -256,7 +222,7 @@ async function updateToggleButton(buttonElement, doorStatusKey) {
 }
 
 // ----------------------------------------
-// 11. Toggle Door Status (on button click)
+// 9. Toggle Door Status (on button click)
 // ----------------------------------------
 async function toggleDoorStatus(buttonElement, doorStatusKey) {
   const user = auth.currentUser;
@@ -264,13 +230,13 @@ async function toggleDoorStatus(buttonElement, doorStatusKey) {
     alert("Please log in to send commands.");
     return;
   }
-  if (!deviceId) {
-    console.error("Device not found for user.");
-    alert("Device not found. Please log out and log in again.");
+  if (!deviceToken) {
+    console.error("Device token not found for user.");
+    alert("Device token not found. Please log out and log in again.");
     return;
   }
   try {
-    const doorStatusRef = ref(db, `devices/${deviceId}/${doorStatusKey}`);
+    const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
     const statusSnapshot = await get(doorStatusRef);
     let newStatus = 'open';
     if (statusSnapshot.exists()) {
@@ -290,18 +256,17 @@ async function toggleDoorStatus(buttonElement, doorStatusKey) {
 }
 
 // ----------------------------------------
-// 12. Listen for Real-Time Updates to Door Status
+// 10. Listen for Real-Time Updates to Door Status
 // ----------------------------------------
 function listenToDoorStatuses() {
-  if (deviceId) {
+  if (deviceToken) {
     listenToDoorStatus(toggleDoorBtn1, 'door1Status');
     listenToDoorStatus(toggleDoorBtn2, 'door2Status');
   }
 }
 
 function listenToDoorStatus(buttonElement, doorStatusKey) {
-  if (!deviceId) return;
-  const doorStatusRef = ref(db, `devices/${deviceId}/${doorStatusKey}`);
+  const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
   onValue(doorStatusRef, (snapshot) => {
     if (snapshot.exists()) {
       const status = snapshot.val().status;
@@ -315,7 +280,7 @@ function listenToDoorStatus(buttonElement, doorStatusKey) {
 }
 
 // ----------------------------------------
-// 13. Event Listeners (Register, Login, etc.)
+// 11. Event Listeners (Register, Login, etc.)
 // ----------------------------------------
 registerBtn.addEventListener('click', () => {
   const email = emailInput.value.trim();
@@ -338,8 +303,6 @@ logoutBtn.addEventListener('click', () => {
     .then(() => {
       console.log('Logged out');
       tokenDisplay.textContent = ''; // Clear token on logout
-      // Optionally, reset deviceId to force reloading on next login:
-      deviceId = null;
     });
 });
 
@@ -352,7 +315,7 @@ toggleDoorBtn2.addEventListener('click', () => {
 });
 
 // ----------------------------------------
-// 14. Auth State Change: Show/Hide Sections, then Fade In the Container
+// 12. Auth State Change: Show/Hide Sections, then Fade In the Container
 // ----------------------------------------
 onAuthStateChanged(auth, async (user) => {
   if (user) {
@@ -360,9 +323,8 @@ onAuthStateChanged(auth, async (user) => {
     authSection.style.display = 'none';
     controlSection.style.display = 'block';
     welcomeTitle.style.display = 'none';
-    containerEl.classList.add('logged-in'); // e.g., remove container shadow on desktop if needed
+    containerEl.classList.add('logged-in'); // Remove container shadow on desktop (if used in CSS)
     await checkAndGenerateToken();
-    await loadDevice();
     await updateToggleButtons();
     listenToDoorStatuses();
   } else {
@@ -371,7 +333,7 @@ onAuthStateChanged(auth, async (user) => {
     controlSection.style.display = 'none';
     welcomeTitle.style.display = 'block';
     tokenDisplay.textContent = '';
-    containerEl.classList.remove('logged-in');
+    containerEl.classList.remove('logged-in'); // Show container shadow on login screen
   }
   appContainer.classList.add('fade-in'); // Fade in the container once auth state is determined
 });
