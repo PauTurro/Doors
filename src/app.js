@@ -1,42 +1,54 @@
 // ----------------------------------------
 // 1. Prevent iOS pinch-zoom via JS (Optional)
 // ----------------------------------------
-document.addEventListener('gesturestart', function (e) {
-  if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-    e.preventDefault();
-  }
-}, { passive: false });
+document.addEventListener(
+  "gesturestart",
+  function (e) {
+    if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA") {
+      e.preventDefault();
+    }
+  },
+  { passive: false }
+);
 
-document.addEventListener('gesturechange', function (e) {
-  if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-    e.preventDefault();
-  }
-}, { passive: false });
+document.addEventListener(
+  "gesturechange",
+  function (e) {
+    if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA") {
+      e.preventDefault();
+    }
+  },
+  { passive: false }
+);
 
-document.addEventListener('gestureend', function (e) {
-  if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-    e.preventDefault();
-  }
-}, { passive: false });
+document.addEventListener(
+  "gestureend",
+  function (e) {
+    if (e.target.tagName !== "INPUT" && e.target.tagName !== "TEXTAREA") {
+      e.preventDefault();
+    }
+  },
+  { passive: false }
+);
 
 // ----------------------------------------
 // 2. Firebase Imports & Initialization
 // ----------------------------------------
-import { initializeApp } from "firebase/app";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import {
   getAuth,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut
-} from "firebase/auth";
+} from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 import {
   getDatabase,
   ref,
   set,
   get,
   onValue
-} from "firebase/database";
+} from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
 // Firebase configuration with your credentials
 const firebaseConfig = {
@@ -56,63 +68,63 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 
 // ----------------------------------------
-// Global Variable for Device Token
+// 3. Global Variable for Device Token
 // ----------------------------------------
-let deviceToken = '';
+let deviceToken = "";
 
 // ----------------------------------------
-// 3. Firebase Auth & DB Helper Functions
+// 4. Firebase Auth & DB Helper Functions
 // ----------------------------------------
-export function registerUser(email, password) {
+function registerUser(email, password) {
   return createUserWithEmailAndPassword(auth, email, password);
 }
 
-export function loginUser(email, password) {
+function loginUser(email, password) {
   return signInWithEmailAndPassword(auth, email, password);
 }
 
-export function logoutUser() {
+function logoutUser() {
   return signOut(auth);
 }
 
-export function onAuthStateChangedListener(callback) {
+function onAuthStateChangedListener(callback) {
   return onAuthStateChanged(auth, callback);
 }
 
-export function writeData(path, data) {
+function writeData(path, data) {
   const dataRef = ref(db, path);
   return set(dataRef, data);
 }
 
-export function readData(path) {
+function readData(path) {
   const dataRef = ref(db, path);
   return get(dataRef);
 }
 
-export function onDataChangeListener(path, callback) {
+function onDataChangeListener(path, callback) {
   const dataRef = ref(db, path);
   return onValue(dataRef, callback);
 }
 
 // ----------------------------------------
-// 4. DOM Elements
+// 5. DOM Elements
 // ----------------------------------------
-const appContainer    = document.getElementById('appContainer');
-const containerEl     = document.getElementById('containerEl'); // <-- Using ID instead of querySelector
-const authSection     = document.getElementById('authSection');
-const controlSection  = document.getElementById('controlSection');
-const emailInput      = document.getElementById('email');
-const passwordInput   = document.getElementById('password');
-const registerBtn     = document.getElementById('registerBtn');
-const loginBtn        = document.getElementById('loginBtn');
-const logoutBtn       = document.getElementById('logoutBtn');
-const toggleDoorBtn1  = document.getElementById('toggleDoor1');
-const toggleDoorBtn2  = document.getElementById('toggleDoor2');
-const tokenDisplay    = document.getElementById('token');
-const welcomeTitle    = document.getElementById('welcomeTitle');
+const appContainer    = document.getElementById("appContainer");
+const containerEl     = document.getElementById("containerEl");
+const authSection     = document.getElementById("authSection");
+const controlSection  = document.getElementById("controlSection");
+const emailInput      = document.getElementById("email");
+const passwordInput   = document.getElementById("password");
+const registerBtn     = document.getElementById("registerBtn");
+const loginBtn        = document.getElementById("loginBtn");
+const logoutBtn       = document.getElementById("logoutBtn");
+const toggleDoorBtn1  = document.getElementById("toggleDoor1");
+const toggleDoorBtn2  = document.getElementById("toggleDoor2");
+const tokenDisplay    = document.getElementById("token");
+const welcomeTitle    = document.getElementById("welcomeTitle");
 
 // ----------------------------------------
-// 5. Translation Loading & Application
+// 6. Translation Loading & Application
 // ----------------------------------------
 let translations = {};
 
@@ -133,22 +145,30 @@ async function loadTranslations(lang) {
 }
 
 function applyTranslations() {
-  if (welcomeTitle) welcomeTitle.textContent = translations.welcomeTitle || "Welcome to the future";
-  if (emailInput) emailInput.placeholder = translations.emailPlaceholder || "Email";
-  if (passwordInput) passwordInput.placeholder = translations.passwordPlaceholder || "Password";
-  if (registerBtn) registerBtn.textContent = translations.registerBtn || "Register";
-  if (loginBtn) loginBtn.textContent = translations.loginBtn || "Go";
-  if (toggleDoorBtn1) toggleDoorBtn1.textContent = translations.toggleDoor1 || "Toggle Door 1";
-  if (toggleDoorBtn2) toggleDoorBtn2.textContent = translations.toggleDoor2 || "Toggle Door 2";
-  if (logoutBtn) logoutBtn.textContent = translations.logoutBtn || "Logout";
-  // Update token label if tokenDisplay's parent has a text node for the label
+  if (welcomeTitle)
+    welcomeTitle.textContent = translations.welcomeTitle || "Welcome to the future";
+  if (emailInput)
+    emailInput.placeholder = translations.emailPlaceholder || "Email";
+  if (passwordInput)
+    passwordInput.placeholder = translations.passwordPlaceholder || "Password";
+  if (registerBtn)
+    registerBtn.textContent = translations.registerBtn || "Register";
+  if (loginBtn)
+    loginBtn.textContent = translations.loginBtn || "Go";
+  if (toggleDoorBtn1)
+    toggleDoorBtn1.textContent = translations.toggleDoor1 || "Toggle Door 1";
+  if (toggleDoorBtn2)
+    toggleDoorBtn2.textContent = translations.toggleDoor2 || "Toggle Door 2";
+  if (logoutBtn)
+    logoutBtn.textContent = translations.logoutBtn || "Logout";
+  // Optionally update token label (if tokenDisplay's parent has a text node for the label)
   if (tokenDisplay && tokenDisplay.parentNode) {
     const parent = tokenDisplay.parentNode;
     if (parent.childNodes[0] && parent.childNodes[0].nodeType === Node.TEXT_NODE) {
       parent.childNodes[0].textContent = translations.tokenLabel || "Your Token: ";
     }
   }
-  // If deviceToken is already set (user is logged in), update door status buttons
+  // If deviceToken is already set, update door status buttons
   if (deviceToken) {
     updateToggleButtons();
   }
@@ -159,11 +179,11 @@ const userLanguage = navigator.language ? navigator.language.split("-")[0] : "en
 loadTranslations(userLanguage);
 
 // ----------------------------------------
-// 6. Helper Function: Generate Random Token
+// 7. Helper Function: Generate Random Token
 // ----------------------------------------
 function generateToken() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let token = '';
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let token = "";
   for (let i = 0; i < 8; i++) {
     token += chars.charAt(Math.floor(Math.random() * chars.length));
   }
@@ -171,7 +191,7 @@ function generateToken() {
 }
 
 // ----------------------------------------
-// 7. Check/Create Device Token for User
+// 8. Check/Create Device Token for User
 // ----------------------------------------
 async function checkAndGenerateToken() {
   const user = auth.currentUser;
@@ -195,34 +215,35 @@ async function checkAndGenerateToken() {
 }
 
 // ----------------------------------------
-// 8. Update Toggle Buttons (Door Status)
+// 9. Update Toggle Buttons (Door Status)
 // ----------------------------------------
 async function updateToggleButtons() {
   if (deviceToken) {
-    await updateToggleButton(toggleDoorBtn1, 'door1Status');
-    await updateToggleButton(toggleDoorBtn2, 'door2Status');
+    await updateToggleButton(toggleDoorBtn1, "door1Status");
+    await updateToggleButton(toggleDoorBtn2, "door2Status");
   }
 }
 
 async function updateToggleButton(buttonElement, doorStatusKey) {
   const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
   const snapshot = await get(doorStatusRef);
-  let currentStatus = 'closed'; // Default
+  let currentStatus = "closed"; // Default
   if (snapshot.exists()) {
     currentStatus = snapshot.val().status;
   } else {
-    // If no status, set "closed"
-    await set(doorStatusRef, { status: 'closed' });
+    // If no status exists, set to "closed"
+    await set(doorStatusRef, { status: "closed" });
   }
-  buttonElement.textContent = (currentStatus === 'open')
-    ? (translations.doorOpen || 'Open')
-    : (translations.doorClosed || 'Closed');
-  buttonElement.classList.toggle('closed', currentStatus === 'closed');
-  buttonElement.classList.toggle('open', currentStatus === 'open');
+  buttonElement.textContent =
+    currentStatus === "open"
+      ? translations.doorOpen || "Open"
+      : translations.doorClosed || "Closed";
+  buttonElement.classList.toggle("closed", currentStatus === "closed");
+  buttonElement.classList.toggle("open", currentStatus === "open");
 }
 
 // ----------------------------------------
-// 9. Toggle Door Status (on button click)
+// 10. Toggle Door Status (on button click)
 // ----------------------------------------
 async function toggleDoorStatus(buttonElement, doorStatusKey) {
   const user = auth.currentUser;
@@ -238,30 +259,35 @@ async function toggleDoorStatus(buttonElement, doorStatusKey) {
   try {
     const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
     const statusSnapshot = await get(doorStatusRef);
-    let newStatus = 'open';
+    let newStatus = "open";
     if (statusSnapshot.exists()) {
       const currentStatus = statusSnapshot.val().status;
-      newStatus = (currentStatus === 'open') ? 'closed' : 'open';
+      newStatus = currentStatus === "open" ? "closed" : "open";
     }
     await set(doorStatusRef, { status: newStatus });
-    buttonElement.textContent = (newStatus === 'open')
-      ? (translations.doorOpen || 'Open')
-      : (translations.doorClosed || 'Closed');
-    buttonElement.classList.toggle('closed', newStatus === 'closed');
-    buttonElement.classList.toggle('open', newStatus === 'open');
-    alert(`${translations.doorStatusAlertPrefix || "Door is now"} ${newStatus === 'open' ? (translations.doorOpen || 'Open') : (translations.doorClosed || 'Closed')}`);
+    buttonElement.textContent =
+      newStatus === "open"
+        ? translations.doorOpen || "Open"
+        : translations.doorClosed || "Closed";
+    buttonElement.classList.toggle("closed", newStatus === "closed");
+    buttonElement.classList.toggle("open", newStatus === "open");
+    alert(
+      `${translations.doorStatusAlertPrefix || "Door is now"} ${
+        newStatus === "open" ? translations.doorOpen || "Open" : translations.doorClosed || "Closed"
+      }`
+    );
   } catch (error) {
     console.error("Error toggling door status:", error);
   }
 }
 
 // ----------------------------------------
-// 10. Listen for Real-Time Updates to Door Status
+// 11. Listen for Real-Time Updates to Door Status
 // ----------------------------------------
 function listenToDoorStatuses() {
   if (deviceToken) {
-    listenToDoorStatus(toggleDoorBtn1, 'door1Status');
-    listenToDoorStatus(toggleDoorBtn2, 'door2Status');
+    listenToDoorStatus(toggleDoorBtn1, "door1Status");
+    listenToDoorStatus(toggleDoorBtn2, "door2Status");
   }
 }
 
@@ -270,70 +296,72 @@ function listenToDoorStatus(buttonElement, doorStatusKey) {
   onValue(doorStatusRef, (snapshot) => {
     if (snapshot.exists()) {
       const status = snapshot.val().status;
-      buttonElement.textContent = (status === 'open')
-        ? (translations.doorOpen || 'Open')
-        : (translations.doorClosed || 'Closed');
-      buttonElement.classList.toggle('closed', status === 'closed');
-      buttonElement.classList.toggle('open', status === 'open');
+      buttonElement.textContent =
+        status === "open"
+          ? translations.doorOpen || "Open"
+          : translations.doorClosed || "Closed";
+      buttonElement.classList.toggle("closed", status === "closed");
+      buttonElement.classList.toggle("open", status === "open");
     }
   });
 }
 
 // ----------------------------------------
-// 11. Event Listeners (Register, Login, etc.)
+// 12. Event Listeners (Register, Login, etc.)
 // ----------------------------------------
-registerBtn.addEventListener('click', () => {
+registerBtn.addEventListener("click", () => {
   const email = emailInput.value.trim();
   const password = passwordInput.value;
   createUserWithEmailAndPassword(auth, email, password)
-    .then(() => console.log('Registered successfully'))
-    .catch(error => console.error("Registration error:", error.message));
+    .then(() => console.log("Registered successfully"))
+    .catch((error) => console.error("Registration error:", error.message));
 });
 
-loginBtn.addEventListener('click', () => {
+loginBtn.addEventListener("click", () => {
   const email = emailInput.value.trim();
   const password = passwordInput.value;
   signInWithEmailAndPassword(auth, email, password)
-    .then(() => console.log('Logged in successfully'))
-    .catch(error => console.error("Login error:", error.message));
+    .then(() => console.log("Logged in successfully"))
+    .catch((error) => console.error("Login error:", error.message));
 });
 
-logoutBtn.addEventListener('click', () => {
+logoutBtn.addEventListener("click", () => {
   signOut(auth)
     .then(() => {
-      console.log('Logged out');
-      tokenDisplay.textContent = ''; // Clear token on logout
-    });
+      console.log("Logged out");
+      tokenDisplay.textContent = ""; // Clear token on logout
+    })
+    .catch((error) => console.error("Logout error:", error.message));
 });
 
-toggleDoorBtn1.addEventListener('click', () => {
-  toggleDoorStatus(toggleDoorBtn1, 'door1Status');
+toggleDoorBtn1.addEventListener("click", () => {
+  toggleDoorStatus(toggleDoorBtn1, "door1Status");
 });
 
-toggleDoorBtn2.addEventListener('click', () => {
-  toggleDoorStatus(toggleDoorBtn2, 'door2Status');
+toggleDoorBtn2.addEventListener("click", () => {
+  toggleDoorStatus(toggleDoorBtn2, "door2Status");
 });
 
 // ----------------------------------------
-// 12. Auth State Change: Show/Hide Sections, then Fade In the Container
+// 13. Auth State Change: Show/Hide Sections, then Fade In the Container
 // ----------------------------------------
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     console.log("User is logged in:", user.uid);
-    authSection.style.display = 'none';
-    controlSection.style.display = 'block';
-    welcomeTitle.style.display = 'none';
-    containerEl.classList.add('logged-in'); // Remove container shadow on desktop (if used in CSS)
+    authSection.style.display = "none";
+    controlSection.style.display = "block";
+    welcomeTitle.style.display = "none";
+    containerEl.classList.add("logged-in");
     await checkAndGenerateToken();
     await updateToggleButtons();
     listenToDoorStatuses();
   } else {
     console.log("User is not logged in.");
-    authSection.style.display = 'flex';
-    controlSection.style.display = 'none';
-    welcomeTitle.style.display = 'block';
-    tokenDisplay.textContent = '';
-    containerEl.classList.remove('logged-in'); // Show container shadow on login screen
+    authSection.style.display = "flex";
+    controlSection.style.display = "none";
+    welcomeTitle.style.display = "block";
+    tokenDisplay.textContent = "";
+    containerEl.classList.remove("logged-in");
   }
-  appContainer.classList.add('fade-in'); // Fade in the container once auth state is determined
+  appContainer.classList.add("fade-in");
 });
