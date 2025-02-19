@@ -56,6 +56,11 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 
 // ----------------------------------------
+// Global Variable for Device Token
+// ----------------------------------------
+let deviceToken = '';
+
+// ----------------------------------------
 // 3. Firebase Auth & DB Helper Functions
 // ----------------------------------------
 export function registerUser(email, password) {
@@ -143,6 +148,10 @@ function applyTranslations() {
       parent.childNodes[0].textContent = translations.tokenLabel || "Your Token: ";
     }
   }
+  // If deviceToken is already set (user is logged in), update door status buttons
+  if (deviceToken) {
+    updateToggleButtons();
+  }
 }
 
 // Detect user language (using two-letter code) and load translations.
@@ -167,11 +176,9 @@ function generateToken() {
 async function checkAndGenerateToken() {
   const user = auth.currentUser;
   if (!user) return;
-
   try {
     const userTokenRef = ref(db, `users/${user.uid}/deviceToken`);
     const snapshot = await get(userTokenRef);
-
     if (snapshot.exists()) {
       deviceToken = snapshot.val();
       console.log("Token already exists:", deviceToken);
@@ -187,11 +194,8 @@ async function checkAndGenerateToken() {
   }
 }
 
-// Variable to store the device token
-let deviceToken = '';
-
 // ----------------------------------------
-// 8. Update Toggle Buttons
+// 8. Update Toggle Buttons (Door Status)
 // ----------------------------------------
 async function updateToggleButtons() {
   if (deviceToken) {
@@ -203,7 +207,6 @@ async function updateToggleButtons() {
 async function updateToggleButton(buttonElement, doorStatusKey) {
   const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
   const snapshot = await get(doorStatusRef);
-
   let currentStatus = 'closed'; // Default
   if (snapshot.exists()) {
     currentStatus = snapshot.val().status;
@@ -211,7 +214,6 @@ async function updateToggleButton(buttonElement, doorStatusKey) {
     // If no status, set "closed"
     await set(doorStatusRef, { status: 'closed' });
   }
-
   buttonElement.textContent = (currentStatus === 'open')
     ? (translations.doorOpen || 'Open')
     : (translations.doorClosed || 'Closed');
@@ -220,7 +222,7 @@ async function updateToggleButton(buttonElement, doorStatusKey) {
 }
 
 // ----------------------------------------
-// 9. Toggle Door Status
+// 9. Toggle Door Status (on button click)
 // ----------------------------------------
 async function toggleDoorStatus(buttonElement, doorStatusKey) {
   const user = auth.currentUser;
@@ -228,33 +230,26 @@ async function toggleDoorStatus(buttonElement, doorStatusKey) {
     alert("Please log in to send commands.");
     return;
   }
-
   if (!deviceToken) {
     console.error("Device token not found for user.");
     alert("Device token not found. Please log out and log in again.");
     return;
   }
-
   try {
     const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
     const statusSnapshot = await get(doorStatusRef);
-
     let newStatus = 'open';
     if (statusSnapshot.exists()) {
       const currentStatus = statusSnapshot.val().status;
       newStatus = (currentStatus === 'open') ? 'closed' : 'open';
     }
-
     await set(doorStatusRef, { status: newStatus });
     buttonElement.textContent = (newStatus === 'open')
       ? (translations.doorOpen || 'Open')
       : (translations.doorClosed || 'Closed');
     buttonElement.classList.toggle('closed', newStatus === 'closed');
     buttonElement.classList.toggle('open', newStatus === 'open');
-
-    alert(`${translations.doorStatusAlertPrefix || "Door is now"} ${(newStatus === 'open')
-      ? (translations.doorOpen || 'Open')
-      : (translations.doorClosed || 'Closed')}`);
+    alert(`${translations.doorStatusAlertPrefix || "Door is now"} ${newStatus === 'open' ? (translations.doorOpen || 'Open') : (translations.doorClosed || 'Closed')}`);
   } catch (error) {
     console.error("Error toggling door status:", error);
   }
@@ -290,7 +285,6 @@ function listenToDoorStatus(buttonElement, doorStatusKey) {
 registerBtn.addEventListener('click', () => {
   const email = emailInput.value.trim();
   const password = passwordInput.value;
-
   createUserWithEmailAndPassword(auth, email, password)
     .then(() => console.log('Registered successfully'))
     .catch(error => console.error("Registration error:", error.message));
@@ -299,7 +293,6 @@ registerBtn.addEventListener('click', () => {
 loginBtn.addEventListener('click', () => {
   const email = emailInput.value.trim();
   const password = passwordInput.value;
-
   signInWithEmailAndPassword(auth, email, password)
     .then(() => console.log('Logged in successfully'))
     .catch(error => console.error("Login error:", error.message));
@@ -330,11 +323,7 @@ onAuthStateChanged(auth, async (user) => {
     authSection.style.display = 'none';
     controlSection.style.display = 'block';
     welcomeTitle.style.display = 'none';
-
-    // Add .logged-in to remove container shadow on desktop (if used in CSS)
-    containerEl.classList.add('logged-in');
-
-    // Setup the user environment
+    containerEl.classList.add('logged-in'); // Remove container shadow on desktop (if used in CSS)
     await checkAndGenerateToken();
     await updateToggleButtons();
     listenToDoorStatuses();
@@ -344,11 +333,7 @@ onAuthStateChanged(auth, async (user) => {
     controlSection.style.display = 'none';
     welcomeTitle.style.display = 'block';
     tokenDisplay.textContent = '';
-
-    // Remove .logged-in to show container shadow on login screen
-    containerEl.classList.remove('logged-in');
+    containerEl.classList.remove('logged-in'); // Show container shadow on login screen
   }
-
-  // Fade in the container once the auth state is determined
-  appContainer.classList.add('fade-in');
+  appContainer.classList.add('fade-in'); // Fade in the container once auth state is determined
 });
