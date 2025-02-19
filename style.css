@@ -484,7 +484,7 @@
     
     /* Custom token text styles for mobile */
     #tokenDisplay {
-      font-size: var(--mobile-token-font-size, 1rem) !important;
+      font-size: var(--mobile-token-font-size, 1.2rem) !important;
       color: var(--mobile-token-text-color, #a070af) !important;
       text-align: center !important;
       margin: var(--mobile-token-margin, 10px auto) !important;
