@@ -31,25 +31,18 @@
 
   <!-- Optional CSS to help block pinch-zoom on modern browsers (Android/Chrome) -->
   <style>
-    /*
-      Allows normal scrolling (pan-x pan-y) but blocks pinch gestures
-      in many browsers.
-    */
     html, body {
       touch-action: pan-x pan-y;
       margin: 0;
-      background-color: #FFF; /* White background to match status bar */
+      background-color: #FFF;
       color: #000;
       font-family: 'Nunito', sans-serif;
-
-      /* Safe area for iOS notch/rounded corners */
       padding-top: env(safe-area-inset-top);
       padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
       padding-bottom: env(safe-area-inset-bottom);
     }
 
-    /* Fallback for older iOS versions that used 'constant()' instead of 'env()' */
     @supports(padding: max(0px)) {
       body {
         padding-top: constant(safe-area-inset-top);
@@ -59,27 +52,18 @@
       }
     }
 
-    /*
-      1) Keep the container invisible initially (opacity: 0).
-      2) We'll add a class (.fade-in) via JS to set opacity:1 and animate.
-    */
     #appContainer {
-      opacity: 0;           /* Invisible initially */
-      transition: opacity 0.5s ease-in-out; /* 0.5s fade time (customize) */
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
     }
-    /*
-      When we add this class from JS, the container transitions to opacity:1
-    */
     #appContainer.fade-in {
       opacity: 1;
     }
 
-    /* (LINE ~71) - ADDED to remove iOS tap highlight */
     html {
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* (LINE ~78) - ADDED to remove Autofill yellow background */
     input:-webkit-autofill,
     input:-webkit-autofill:hover,
     input:-webkit-autofill:focus,
@@ -89,7 +73,6 @@
       transition: background-color 9999s ease-in-out 0s;
     }
 
-    /* (LINE ~87) - OPTIONAL: Remove focus outlines if desired */
     input:focus,
     button:focus {
       outline: none !important;
@@ -120,20 +103,16 @@
 </head>
 
 <body>
-  <!-- All content is wrapped inside #appContainer, which starts at opacity:0 -->
+  <!-- All content is wrapped inside #appContainer -->
   <div id="appContainer">
     <div class="background">
-      <!-- 
-           1) Add an ID to your container 
-              (for toggling .logged-in in JS)
-      -->
       <div class="container" id="containerEl">
-        <!-- Title in Nunito -->
+        <!-- Title (translated) -->
         <h1 class="title" id="welcomeTitle" style="display: none;">
           Welcome to the future
         </h1>
 
-        <!-- Auth Section (Login/Register) -->
+        <!-- Auth Section -->
         <div id="authSection" class="auth-horizontal" style="display: none;">
           <input type="email" id="email" placeholder="Email" />
           <input type="password" id="password" placeholder="Password" />
@@ -141,7 +120,7 @@
           <button id="loginBtn" class="login-btn">Go</button>
         </div>
 
-        <!-- Control Section (Visible after login) -->
+        <!-- Control Section -->
         <div id="controlSection" style="display: none;">
           <p id="tokenDisplay">
             Your Token: <span id="token"></span>
@@ -154,17 +133,73 @@
 
           <button id="logoutBtn">Logout</button>
         </div>
-      </div><!-- /#containerEl -->
-    </div><!-- /.background -->
-  </div><!-- /#appContainer -->
+      </div>
+    </div>
+  </div>
 
-  <!-- Your JavaScript code, using ES Modules -->
+  <!-- JavaScript code with language detection and Firebase logic -->
   <script type="module">
+    /************************************************
+     *  Language Detection & Translation Loading
+     ************************************************/
+    async function loadTranslations(lang) {
+      try {
+        const response = await fetch(`translations/${lang}.json`);
+        if (!response.ok) {
+          throw new Error(`Translation file not found for: ${lang}`);
+        }
+        const translations = await response.json();
+        applyTranslations(translations);
+      } catch (error) {
+        console.error("Error loading translations:", error);
+        if (lang !== "en") {
+          // Fallback to English if the detected language file isn’t available.
+          loadTranslations("en");
+        }
+      }
+    }
+
+    function applyTranslations(translations) {
+      // Update static text elements with the loaded translations.
+      if (document.getElementById("welcomeTitle")) {
+        document.getElementById("welcomeTitle").textContent = translations.welcomeTitle || "Welcome to the future";
+      }
+      if (document.getElementById("email")) {
+        document.getElementById("email").placeholder = translations.emailPlaceholder || "Email";
+      }
+      if (document.getElementById("password")) {
+        document.getElementById("password").placeholder = translations.passwordPlaceholder || "Password";
+      }
+      if (document.getElementById("registerBtn")) {
+        document.getElementById("registerBtn").textContent = translations.registerBtn || "Register";
+      }
+      if (document.getElementById("loginBtn")) {
+        document.getElementById("loginBtn").textContent = translations.loginBtn || "Go";
+      }
+      if (document.getElementById("toggleDoor1")) {
+        document.getElementById("toggleDoor1").textContent = translations.toggleDoor1 || "Toggle Door 1";
+      }
+      if (document.getElementById("toggleDoor2")) {
+        document.getElementById("toggleDoor2").textContent = translations.toggleDoor2 || "Toggle Door 2";
+      }
+      if (document.getElementById("logoutBtn")) {
+        document.getElementById("logoutBtn").textContent = translations.logoutBtn || "Logout";
+      }
+      // Optionally update the token display label if provided.
+      const tokenDisplay = document.getElementById("tokenDisplay");
+      if (tokenDisplay && translations.tokenLabel) {
+        // Assumes tokenDisplay starts with the label text, followed by the token span.
+        tokenDisplay.childNodes[0].textContent = translations.tokenLabel;
+      }
+    }
+
+    // Detect the user's language (using only the two-letter code) and load translations.
+    const userLanguage = navigator.language ? navigator.language.split("-")[0] : "en";
+    loadTranslations(userLanguage);
+
     /************************************************
      *           Firebase & App Logic
      ************************************************/
-
-    // 1. Import Firebase modules
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import {
       getAuth,
@@ -181,7 +216,6 @@
       onValue
     } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-    // 2. Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDWMkL3P7OWlosSFXXRg8gvUQg6-7Y9uu8",
       authDomain: "esp32door-control.firebaseapp.com",
@@ -193,7 +227,6 @@
       measurementId: "G-91SJ3GLZ0Z"
     };
 
-    // 3. Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getDatabase(app);
@@ -202,7 +235,7 @@
      *            DOM Element References
      ************************************************/
     const appContainer   = document.getElementById("appContainer");
-    const containerEl    = document.getElementById("containerEl"); // <-- Our container
+    const containerEl    = document.getElementById("containerEl");
     const authSection    = document.getElementById("authSection");
     const controlSection = document.getElementById("controlSection");
     const emailInput     = document.getElementById("email");
@@ -215,14 +248,11 @@
     const tokenDisplay   = document.getElementById("token");
     const welcomeTitle   = document.getElementById("welcomeTitle");
 
-    // Variable to store the device token
     let deviceToken = "";
 
     /************************************************
      *              Helper Functions
      ************************************************/
-
-    // Generate a random token of length 8
     function generateToken() {
       const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       let token = "";
@@ -232,7 +262,6 @@
       return token;
     }
 
-    // Check or create device token for the current user
     async function checkAndGenerateToken() {
       const user = auth.currentUser;
       if (!user) return;
@@ -248,31 +277,28 @@
           await set(userTokenRef, deviceToken);
           console.log("New token generated and saved:", deviceToken);
         }
-        tokenDisplay.textContent = deviceToken; // Update UI
+        tokenDisplay.textContent = deviceToken;
       } catch (error) {
         console.error("Error checking/saving token:", error);
         alert("Error generating token. Please try again.");
       }
     }
 
-    // Update door toggle buttons
     async function updateToggleButtons() {
       if (!deviceToken) return;
       await updateToggleButton(toggleDoorBtn1, "door1Status");
       await updateToggleButton(toggleDoorBtn2, "door2Status");
     }
 
-    // Single door button update
     async function updateToggleButton(buttonElement, doorStatusKey) {
       const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
       const snapshot = await get(doorStatusRef);
 
-      let currentStatus = "closed"; // Default
+      let currentStatus = "closed";
 
       if (snapshot.exists()) {
         currentStatus = snapshot.val().status;
       } else {
-        // If no status, set "closed"
         await set(doorStatusRef, { status: "closed" });
       }
 
@@ -281,7 +307,6 @@
       buttonElement.classList.toggle("open", currentStatus === "open");
     }
 
-    // Toggle door state
     async function toggleDoorStatus(buttonElement, doorStatusKey) {
       const user = auth.currentUser;
       if (!user) {
@@ -298,7 +323,7 @@
         const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
         const statusSnapshot = await get(doorStatusRef);
 
-        let newStatus = "open"; // Default
+        let newStatus = "open";
         if (statusSnapshot.exists()) {
           const currentStatus = statusSnapshot.val().status;
           newStatus = (currentStatus === "open") ? "closed" : "open";
@@ -315,7 +340,6 @@
       }
     }
 
-    // Listen for real-time door status
     function listenToDoorStatuses() {
       if (!deviceToken) return;
       listenToDoorStatus(toggleDoorBtn1, "door1Status");
@@ -334,18 +358,10 @@
       });
     }
 
-    // Handle logged-in UI setup
     async function setupLoggedInUser() {
-      // 1. Generate/check device token
       await checkAndGenerateToken();
-
-      // 2. Update toggle buttons
       await updateToggleButtons();
-
-      // 3. Listen to door statuses
       listenToDoorStatuses();
-
-      // 4. Show the control screen
       authSection.style.display = "none";
       controlSection.style.display = "block";
       welcomeTitle.style.display = "none";
@@ -407,10 +423,7 @@
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         console.log("User is logged in:", user.uid);
-
-        // -- ADD .logged-in class so shadow is removed on desktop (in your CSS) --
         containerEl.classList.add("logged-in");
-
         await setupLoggedInUser();
       } else {
         console.log("User is not logged in.");
@@ -418,12 +431,8 @@
         controlSection.style.display = "none";
         welcomeTitle.style.display = "block";
         tokenDisplay.textContent = "";
-
-        // -- REMOVE .logged-in for the login screen (shows shadow) --
         containerEl.classList.remove("logged-in");
       }
-
-      // Fade in the container now that we know the auth state
       appContainer.classList.add("fade-in");
     });
   </script>
