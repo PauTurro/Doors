@@ -44,7 +44,6 @@
         getDatabase, ref, set, get, onValue 
       } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-      // Your Firebase configuration
       const firebaseConfig = {
         apiKey: "AIzaSyDWMkL3P7OWlosSFXXRg8gvUQg6-7Y9uu8",
         authDomain: "esp32door-control.firebaseapp.com",
@@ -56,7 +55,6 @@
         measurementId: "G-91SJ3GLZ0Z"
       };
 
-      // Initialize Firebase
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
       const db = getDatabase(app);
