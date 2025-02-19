@@ -2,46 +2,216 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ESP32 Door Control</title>
+
+    <!-- Disallows pinch-to-zoom -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+
+    <!-- Android/Chrome: Make toolbar/status bar white -->
+    <meta name="theme-color" content="#FFFFFF" />
+
+    <!-- iOS PWA: Enable standalone mode and set status bar to 'default' (white/light style) -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+    <title>ESP32 Door Control PWA</title>
+
+    <!-- Google Fonts: Nunito -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json" />
+
+    <!-- Optional CSS to help block pinch-zoom on modern browsers (Android/Chrome) -->
     <style>
-      body { font-family: Arial, sans-serif; margin: 20px; }
-      .hidden { display: none; }
-      .device-card { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
-      .toggle-btn { margin: 5px; padding: 5px 10px; }
-      .open { background-color: #cfc; }
-      .closed { background-color: #fcc; }
+      html, body {
+        touch-action: pan-x pan-y;
+        margin: 0;
+        background-color: #FFF;
+        color: #000;
+        font-family: 'Nunito', sans-serif;
+        padding-top: env(safe-area-inset-top);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+
+      @supports(padding: max(0px)) {
+        body {
+          padding-top: constant(safe-area-inset-top);
+          padding-left: constant(safe-area-inset-left);
+          padding-right: constant(safe-area-inset-right);
+          padding-bottom: constant(safe-area-inset-bottom);
+        }
+      }
+
+      #appContainer {
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+      }
+      #appContainer.fade-in {
+        opacity: 1;
+      }
+
+      html {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus,
+      input:-webkit-autofill:active {
+        box-shadow: 0 0 0 1000px #fff inset !important;
+        -webkit-text-fill-color: #000 !important;
+        transition: background-color 9999s ease-in-out 0s;
+      }
+
+      input:focus,
+      button:focus {
+        outline: none !important;
+        box-shadow: none !important;
+      }
     </style>
+
+    <!-- iOS Safari pinch-zoom workaround: prevent gesturestart/change/end -->
+    <script>
+      document.addEventListener('gesturestart', function (e) {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      document.addEventListener('gesturechange', function (e) {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      document.addEventListener('gestureend', function (e) {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+        }
+      }, { passive: false });
+    </script>
   </head>
+
   <body>
-    <h1>ESP32 Door Control</h1>
+    <!-- All content is wrapped inside #appContainer -->
+    <div id="appContainer">
+      <div class="background">
+        <div class="container" id="containerEl">
+          <!-- Title (translated) -->
+          <h1 class="title" id="welcomeTitle" style="display: none;">
+            Welcome to the future
+          </h1>
 
-    <!-- Authentication Section -->
-    <div id="authSection">
-      <input type="email" id="email" placeholder="Email" />
-      <input type="password" id="password" placeholder="Password" />
-      <button id="registerBtn">Register</button>
-      <button id="loginBtn">Login</button>
+          <!-- Auth Section -->
+          <div id="authSection" class="auth-horizontal" style="display: none;">
+            <input type="email" id="email" placeholder="Email" />
+            <input type="password" id="password" placeholder="Password" />
+            <button id="registerBtn" class="register-btn">Register</button>
+            <button id="loginBtn" class="login-btn">Go</button>
+          </div>
+
+          <!-- Control Section -->
+          <div id="controlSection" style="display: none;">
+            <p id="tokenDisplay">
+              Your Token: <span id="token"></span>
+            </p>
+
+            <div class="toggle-buttons">
+              <button id="toggleDoor1" class="toggle-btn">Toggle Door 1</button>
+              <button id="toggleDoor2" class="toggle-btn">Toggle Door 2</button>
+            </div>
+
+            <button id="logoutBtn">Logout</button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Control Section -->
-    <div id="controlSection" class="hidden">
-      <h2>Your Devices</h2>
-      <div id="deviceList"></div>
-      <input type="text" id="deviceTokenInput" placeholder="Device Token" />
-      <button id="addDeviceBtn">Add Device</button>
-      <br /><br />
-      <button id="logoutBtn">Logout</button>
-    </div>
-
+    <!-- JavaScript code with language detection and Firebase logic -->
     <script type="module">
+      /************************************************
+       *  Language Detection & Translation Loading
+       ************************************************/
+      async function loadTranslations(lang) {
+        try {
+          const response = await fetch(`translations/${lang}.json`);
+          if (!response.ok) {
+            throw new Error(`Translation file not found for: ${lang}`);
+          }
+          const translations = await response.json();
+          applyTranslations(translations);
+        } catch (error) {
+          console.error("Error loading translations:", error);
+          if (lang !== "en") {
+            // Fallback to English if not found
+            loadTranslations("en");
+          }
+        }
+      }
+
+      function applyTranslations(translations) {
+        if (document.getElementById("welcomeTitle")) {
+          document.getElementById("welcomeTitle").textContent = translations.welcomeTitle || "Welcome to the future";
+        }
+        if (document.getElementById("email")) {
+          document.getElementById("email").placeholder = translations.emailPlaceholder || "Email";
+        }
+        if (document.getElementById("password")) {
+          document.getElementById("password").placeholder = translations.passwordPlaceholder || "Password";
+        }
+        if (document.getElementById("registerBtn")) {
+          document.getElementById("registerBtn").textContent = translations.registerBtn || "Register";
+        }
+        if (document.getElementById("loginBtn")) {
+          document.getElementById("loginBtn").textContent = translations.loginBtn || "Go";
+        }
+        if (document.getElementById("toggleDoor1")) {
+          document.getElementById("toggleDoor1").textContent = translations.toggleDoor1 || "Toggle Door 1";
+        }
+        if (document.getElementById("toggleDoor2")) {
+          document.getElementById("toggleDoor2").textContent = translations.toggleDoor2 || "Toggle Door 2";
+        }
+        if (document.getElementById("logoutBtn")) {
+          document.getElementById("logoutBtn").textContent = translations.logoutBtn || "Logout";
+        }
+        // Optionally update token label if provided
+        const tokenDisplay = document.getElementById("tokenDisplay");
+        if (tokenDisplay && translations.tokenLabel) {
+          tokenDisplay.childNodes[0].textContent = translations.tokenLabel;
+        }
+      }
+
+      // Detect user language and load translations
+      const userLanguage = navigator.language ? navigator.language.split("-")[0] : "en";
+      loadTranslations(userLanguage);
+
+      /************************************************
+       *           Firebase & App Logic
+       ************************************************/
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-      import { 
-        getAuth, onAuthStateChanged, createUserWithEmailAndPassword, 
-        signInWithEmailAndPassword, signOut 
+      import {
+        getAuth,
+        onAuthStateChanged,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        signOut
       } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-      import { 
-        getDatabase, ref, set, get, onValue 
+      import {
+        getDatabase,
+        ref,
+        set,
+        get,
+        onValue
       } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
       const firebaseConfig = {
@@ -59,171 +229,204 @@
       const auth = getAuth(app);
       const db = getDatabase(app);
 
-      // DOM Elements
-      const authSection = document.getElementById("authSection");
+      /************************************************
+       *            DOM Element References
+       ************************************************/
+      const appContainer   = document.getElementById("appContainer");
+      const containerEl    = document.getElementById("containerEl");
+      const authSection    = document.getElementById("authSection");
       const controlSection = document.getElementById("controlSection");
-      const emailInput = document.getElementById("email");
-      const passwordInput = document.getElementById("password");
-      const registerBtn = document.getElementById("registerBtn");
-      const loginBtn = document.getElementById("loginBtn");
-      const logoutBtn = document.getElementById("logoutBtn");
-      const deviceList = document.getElementById("deviceList");
-      const deviceTokenInput = document.getElementById("deviceTokenInput");
-      const addDeviceBtn = document.getElementById("addDeviceBtn");
+      const emailInput     = document.getElementById("email");
+      const passwordInput  = document.getElementById("password");
+      const registerBtn    = document.getElementById("registerBtn");
+      const loginBtn       = document.getElementById("loginBtn");
+      const logoutBtn      = document.getElementById("logoutBtn");
+      const toggleDoorBtn1 = document.getElementById("toggleDoor1");
+      const toggleDoorBtn2 = document.getElementById("toggleDoor2");
+      const tokenDisplay   = document.getElementById("token");
+      const welcomeTitle   = document.getElementById("welcomeTitle");
 
-      // Authentication Event Listeners
-      registerBtn.addEventListener("click", async () => {
-        try {
-          const email = emailInput.value;
-          const password = passwordInput.value;
-          await createUserWithEmailAndPassword(auth, email, password);
-          alert("Registered! Please log in.");
-        } catch (error) {
-          alert("Registration error: " + error.message);
+      let deviceToken = "";
+
+      /************************************************
+       *              Helper Functions
+       ************************************************/
+      function generateToken() {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let token = "";
+        for (let i = 0; i < 8; i++) {
+          token += chars.charAt(Math.floor(Math.random() * chars.length));
         }
-      });
+        return token;
+      }
 
-      loginBtn.addEventListener("click", async () => {
-        try {
-          const email = emailInput.value;
-          const password = passwordInput.value;
-          await signInWithEmailAndPassword(auth, email, password);
-        } catch (error) {
-          alert("Login error: " + error.message);
-        }
-      });
-
-      logoutBtn.addEventListener("click", async () => {
-        await signOut(auth);
-      });
-
-      // Load user devices from Firebase
-      async function loadUserDevices() {
+      async function checkAndGenerateToken() {
         const user = auth.currentUser;
         if (!user) return;
-        const userDevicesRef = ref(db, "users/" + user.uid + "/monitoredDevices");
-        const snapshot = await get(userDevicesRef);
-        deviceList.innerHTML = "";
+        try {
+          const userTokenRef = ref(db, "users/" + user.uid + "/deviceToken");
+          const snapshot = await get(userTokenRef);
+
+          if (snapshot.exists()) {
+            deviceToken = snapshot.val();
+            console.log("Token already exists:", deviceToken);
+          } else {
+            deviceToken = generateToken();
+            await set(userTokenRef, deviceToken);
+            console.log("New token generated and saved:", deviceToken);
+          }
+          tokenDisplay.textContent = deviceToken;
+        } catch (error) {
+          console.error("Error checking/saving token:", error);
+          alert("Error generating token. Please try again.");
+        }
+      }
+
+      async function updateToggleButtons() {
+        if (!deviceToken) return;
+        await updateToggleButton(toggleDoorBtn1, "door1Status");
+        await updateToggleButton(toggleDoorBtn2, "door2Status");
+      }
+
+      async function updateToggleButton(buttonElement, doorStatusKey) {
+        const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
+        const snapshot = await get(doorStatusRef);
+
+        let currentStatus = "closed";
         if (snapshot.exists()) {
-          const devices = snapshot.val();
-          for (const token in devices) {
-            createDeviceCard(token, devices[token]);
+          currentStatus = snapshot.val().status;
+        } else {
+          await set(doorStatusRef, { status: "closed" });
+        }
+
+        buttonElement.textContent = (currentStatus === "open") ? "Open" : "Closed";
+        buttonElement.classList.toggle("closed", currentStatus === "closed");
+        buttonElement.classList.toggle("open", currentStatus === "open");
+      }
+
+      async function toggleDoorStatus(buttonElement, doorStatusKey) {
+        const user = auth.currentUser;
+        if (!user) {
+          alert("Please log in to send commands.");
+          return;
+        }
+        if (!deviceToken) {
+          console.error("Device token not found for user.");
+          alert("Device token not found. Please log out and log in again.");
+          return;
+        }
+
+        try {
+          const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
+          const statusSnapshot = await get(doorStatusRef);
+          let newStatus = "open";
+          if (statusSnapshot.exists()) {
+            const currentStatus = statusSnapshot.val().status;
+            newStatus = (currentStatus === "open") ? "closed" : "open";
           }
+          await set(doorStatusRef, { status: newStatus });
+          buttonElement.textContent = (newStatus === "open") ? "Open" : "Closed";
+          buttonElement.classList.toggle("closed", newStatus === "closed");
+          buttonElement.classList.toggle("open", newStatus === "open");
+
+          alert("Door is now " + newStatus);
+        } catch (error) {
+          console.error("Error toggling door status:", error);
         }
       }
 
-      // Create a simple device card with two door toggle buttons
-      function createDeviceCard(token, permission) {
-        const card = document.createElement("div");
-        card.className = "device-card";
-        card.innerHTML = `<strong>Device: ${token} (${permission})</strong><br>`;
-        
-        const door1Btn = document.createElement("button");
-        door1Btn.className = "toggle-btn";
-        door1Btn.textContent = "Door 1";
-        door1Btn.addEventListener("click", () => {
-          if (permission === "view") {
-            alert("No permission to control this door.");
-            return;
-          }
-          toggleDoorStatus(token, "door1Status", door1Btn);
-        });
-        card.appendChild(door1Btn);
-
-        const door2Btn = document.createElement("button");
-        door2Btn.className = "toggle-btn";
-        door2Btn.textContent = "Door 2";
-        door2Btn.addEventListener("click", () => {
-          if (permission === "view") {
-            alert("No permission to control this door.");
-            return;
-          }
-          toggleDoorStatus(token, "door2Status", door2Btn);
-        });
-        card.appendChild(door2Btn);
-
-        deviceList.appendChild(card);
-
-        // Start listening for door status updates
-        listenToDoorStatus(token, "door1Status", door1Btn);
-        listenToDoorStatus(token, "door2Status", door2Btn);
+      function listenToDoorStatuses() {
+        if (!deviceToken) return;
+        listenToDoorStatus(toggleDoorBtn1, "door1Status");
+        listenToDoorStatus(toggleDoorBtn2, "door2Status");
       }
 
-      // Toggle door status in the database
-      async function toggleDoorStatus(token, doorStatusKey, btn) {
-        const doorRef = ref(db, `devices/${token}/${doorStatusKey}`);
-        const snapshot = await get(doorRef);
-        let newStatus = "open";
-        if (snapshot.exists() && snapshot.val().status === "open") {
-          newStatus = "closed";
-        }
-        await set(doorRef, { status: newStatus });
-        btn.textContent = newStatus === "open" ? "Open" : "Closed";
-      }
-
-      // Listen for real-time door status changes
-      function listenToDoorStatus(token, doorStatusKey, btn) {
-        const doorRef = ref(db, `devices/${token}/${doorStatusKey}`);
-        onValue(doorRef, (snapshot) => {
+      function listenToDoorStatus(buttonElement, doorStatusKey) {
+        const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
+        onValue(doorStatusRef, (snapshot) => {
           if (snapshot.exists()) {
             const status = snapshot.val().status;
-            btn.textContent = status === "open" ? "Open" : "Closed";
-            btn.className = "toggle-btn " + (status === "open" ? "open" : "closed");
+            buttonElement.textContent = (status === "open") ? "Open" : "Closed";
+            buttonElement.classList.toggle("closed", status === "closed");
+            buttonElement.classList.toggle("open", status === "open");
           }
         });
       }
 
-      // Add a device to the user's monitoredDevices list
-      addDeviceBtn.addEventListener("click", async () => {
-        const token = deviceTokenInput.value.trim();
-        if (!token) {
-          alert("Please enter a device token.");
-          return;
-        }
-        const user = auth.currentUser;
-        if (!user) return;
+      async function setupLoggedInUser() {
+        await checkAndGenerateToken();
+        await updateToggleButtons();
+        listenToDoorStatuses();
+        authSection.style.display = "none";
+        controlSection.style.display = "block";
+        welcomeTitle.style.display = "none";
+      }
 
-        const userDeviceRef = ref(db, `users/${user.uid}/monitoredDevices/${token}`);
-        const deviceSnapshot = await get(userDeviceRef);
-        if (deviceSnapshot.exists()) {
-          alert("Device already added.");
-          return;
-        }
-
-        // Check if the device exists in the main devices node.
-        const deviceRef = ref(db, `devices/${token}`);
-        const snapshot = await get(deviceRef);
-        let permission = "view";
-        if (!snapshot.exists()) {
-          // Device doesn't exist: create it with the current user as owner.
-          await set(deviceRef, {
-            door1Status: { status: "closed" },
-            door2Status: { status: "closed" },
-            owner: user.uid,
-            sharedWith: {}
+      /************************************************
+       *         Event Listeners for Auth
+       ************************************************/
+      registerBtn.addEventListener("click", () => {
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        createUserWithEmailAndPassword(auth, email, password)
+          .then(() => {
+            console.log("Registered successfully");
+            alert("Registration successful! You can now log in.");
+          })
+          .catch(error => {
+            console.error("Registration error:", error);
+            alert("Registration failed: " + error.message);
           });
-          permission = "owner";
-        } else {
-          // Device exists: add the user to its sharedWith list.
-          await set(ref(db, `devices/${token}/sharedWith/${user.uid}`), { permissions: "view" });
-        }
-        // Save device info to the user's list.
-        await set(userDeviceRef, permission);
-        createDeviceCard(token, permission);
-        deviceTokenInput.value = "";
       });
 
-      // Listen for auth state changes
-      onAuthStateChanged(auth, (user) => {
+      loginBtn.addEventListener("click", () => {
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        signInWithEmailAndPassword(auth, email, password)
+          .then(() => console.log("Logged in successfully"))
+          .catch(error => {
+            console.error("Login error:", error);
+            alert("Login failed: " + error.message);
+          });
+      });
+
+      logoutBtn.addEventListener("click", () => {
+        signOut(auth)
+          .then(() => {
+            console.log("Logged out");
+            tokenDisplay.textContent = "";
+          })
+          .catch(error => {
+            console.error("Logout error:", error);
+            alert("Logout failed: " + error.message);
+          });
+      });
+
+      toggleDoorBtn1.addEventListener("click", () => {
+        toggleDoorStatus(toggleDoorBtn1, "door1Status");
+      });
+
+      toggleDoorBtn2.addEventListener("click", () => {
+        toggleDoorStatus(toggleDoorBtn2, "door2Status");
+      });
+
+      /************************************************
+       *   Listen to Firebase Auth State
+       ************************************************/
+      onAuthStateChanged(auth, async (user) => {
         if (user) {
-          authSection.classList.add("hidden");
-          controlSection.classList.remove("hidden");
-          loadUserDevices();
+          console.log("User is logged in:", user.uid);
+          containerEl.classList.add("logged-in");
+          await setupLoggedInUser();
         } else {
-          authSection.classList.remove("hidden");
-          controlSection.classList.add("hidden");
-          deviceList.innerHTML = "";
+          console.log("User is not logged in.");
+          authSection.style.display = "flex";
+          controlSection.style.display = "none";
+          welcomeTitle.style.display = "block";
+          tokenDisplay.textContent = "";
+          containerEl.classList.remove("logged-in");
         }
+        appContainer.classList.add("fade-in");
       });
     </script>
   </body>
