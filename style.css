@@ -60,7 +60,7 @@
   .title {
     font-weight: 700;
     font-size: var(--title-font-size, 1.6rem);
-    color: var(--title-color, #a367b5);
+    color: var(--title-color, #a862be);
     margin-bottom: 25px;
   }
   
