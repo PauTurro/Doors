@@ -59,8 +59,8 @@
      =========================== */
   .title {
     font-weight: 700;
-    font-size: var(--title-font-size, 1.4rem);
-    color: var(--title-color, #a070af);
+    font-size: var(--title-font-size, 1.6rem);
+    color: var(--title-color, #a367b5);
     margin-bottom: 25px;
   }
   
@@ -175,7 +175,7 @@
     color: #ffffff;
     border-radius: 25px;
     cursor: pointer;
-    transition: background-color 1s ease, transform 0.2s ease;
+    transition: background-color 0.8s ease, transform 0.2s ease;
     background-color: rgba(255, 207, 95, 0.7);
   }
   
@@ -186,7 +186,7 @@
   
   .toggle-btn.closed {
     background-color: #be8bce;
-    border: 3px solid #7d5689;
+    border: 3px solid #82598f;
   }
   
   .toggle-btn:hover {
