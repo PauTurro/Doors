@@ -153,14 +153,12 @@
       } catch (error) {
         console.error("Error loading translations:", error);
         if (lang !== "en") {
-          // Fallback to English if the detected language file isn’t available.
           loadTranslations("en");
         }
       }
     }
 
     function applyTranslations(translations) {
-      // Update static text elements with the loaded translations.
       if (document.getElementById("welcomeTitle")) {
         document.getElementById("welcomeTitle").textContent = translations.welcomeTitle || "Welcome to the future";
       }
@@ -191,15 +189,12 @@
       if (document.getElementById("doorClosed")) {
          document.getElementById("doorClosed").textContent = translations.doorClosed || "Closed";
       }
-      // Optionally update the token display label if provided.
       const tokenDisplay = document.getElementById("tokenDisplay");
       if (tokenDisplay && translations.tokenLabel) {
-        // Assumes tokenDisplay starts with the label text, followed by the token span.
         tokenDisplay.childNodes[0].textContent = translations.tokenLabel;
       }
     }
 
-    // Detect the user's language (using only the two-letter code) and load translations.
     const userLanguage = navigator.language ? navigator.language.split("-")[0] : "en";
     loadTranslations(userLanguage);
 
@@ -219,7 +214,11 @@
       ref,
       set,
       get,
-      onValue
+      onValue,
+      query,
+      orderByChild,
+      equalTo,
+      push
     } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
     const firebaseConfig = {
@@ -255,6 +254,7 @@
     const welcomeTitle   = document.getElementById("welcomeTitle");
 
     let deviceToken = "";
+    let deviceId = null; // Will store the key of the device node
 
     /************************************************
      *              Helper Functions
@@ -274,7 +274,6 @@
       try {
         const userTokenRef = ref(db, "users/" + user.uid + "/deviceToken");
         const snapshot = await get(userTokenRef);
-
         if (snapshot.exists()) {
           deviceToken = snapshot.val();
           console.log("Token already exists:", deviceToken);
@@ -290,24 +289,48 @@
       }
     }
 
-    async function updateToggleButtons() {
+    // Load (or create) a device node that matches the user's deviceToken.
+    async function loadDevice() {
       if (!deviceToken) return;
+      const devicesRef = ref(db, "devices");
+      const deviceQuery = query(devicesRef, orderByChild("deviceToken"), equalTo(deviceToken));
+      const snapshot = await get(deviceQuery);
+      if (snapshot.exists()) {
+        snapshot.forEach((childSnapshot) => {
+          deviceId = childSnapshot.key;
+          console.log("Device found:", deviceId);
+        });
+      } else {
+        // Create a new device node if none exists.
+        const newDeviceRef = push(devicesRef);
+        deviceId = newDeviceRef.key;
+        await set(newDeviceRef, {
+          deviceToken: deviceToken,
+          door1Status: { status: "closed" },
+          door2Status: { status: "closed" }
+        });
+        console.log("New device created:", deviceId);
+      }
+      await updateToggleButtons();
+      listenToDoorStatuses();
+    }
+
+    async function updateToggleButtons() {
+      if (!deviceId) return;
       await updateToggleButton(toggleDoorBtn1, "door1Status");
       await updateToggleButton(toggleDoorBtn2, "door2Status");
     }
 
     async function updateToggleButton(buttonElement, doorStatusKey) {
-      const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
+      if (!deviceId) return;
+      const doorStatusRef = ref(db, `devices/${deviceId}/${doorStatusKey}`);
       const snapshot = await get(doorStatusRef);
-
       let currentStatus = "closed";
-
       if (snapshot.exists()) {
         currentStatus = snapshot.val().status;
       } else {
         await set(doorStatusRef, { status: "closed" });
       }
-
       buttonElement.textContent = (currentStatus === "open") ? "Open" : "Closed";
       buttonElement.classList.toggle("closed", currentStatus === "closed");
       buttonElement.classList.toggle("open", currentStatus === "open");
@@ -319,27 +342,23 @@
         alert("Please log in to send commands.");
         return;
       }
-      if (!deviceToken) {
-        console.error("Device token not found for user.");
-        alert("Device token not found. Please log out and log in again.");
+      if (!deviceId) {
+        console.error("Device not found for user.");
+        alert("Device not found. Please log out and log in again.");
         return;
       }
-
       try {
-        const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
+        const doorStatusRef = ref(db, `devices/${deviceId}/${doorStatusKey}`);
         const statusSnapshot = await get(doorStatusRef);
-
         let newStatus = "open";
         if (statusSnapshot.exists()) {
           const currentStatus = statusSnapshot.val().status;
           newStatus = (currentStatus === "open") ? "closed" : "open";
         }
-
         await set(doorStatusRef, { status: newStatus });
         buttonElement.textContent = (newStatus === "open") ? "Open" : "Closed";
         buttonElement.classList.toggle("closed", newStatus === "closed");
         buttonElement.classList.toggle("open", newStatus === "open");
-
         alert("Door is now " + newStatus);
       } catch (error) {
         console.error("Error toggling door status:", error);
@@ -347,13 +366,14 @@
     }
 
     function listenToDoorStatuses() {
-      if (!deviceToken) return;
+      if (!deviceId) return;
       listenToDoorStatus(toggleDoorBtn1, "door1Status");
       listenToDoorStatus(toggleDoorBtn2, "door2Status");
     }
 
     function listenToDoorStatus(buttonElement, doorStatusKey) {
-      const doorStatusRef = ref(db, `devices/${deviceToken}/${doorStatusKey}`);
+      if (!deviceId) return;
+      const doorStatusRef = ref(db, `devices/${deviceId}/${doorStatusKey}`);
       onValue(doorStatusRef, (snapshot) => {
         if (snapshot.exists()) {
           const status = snapshot.val().status;
@@ -366,8 +386,7 @@
 
     async function setupLoggedInUser() {
       await checkAndGenerateToken();
-      await updateToggleButtons();
-      listenToDoorStatuses();
+      await loadDevice();
       authSection.style.display = "none";
       controlSection.style.display = "block";
       welcomeTitle.style.display = "none";
@@ -379,7 +398,6 @@
     registerBtn.addEventListener("click", () => {
       const email = emailInput.value.trim();
       const password = passwordInput.value;
-
       createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
           console.log("Registered successfully");
@@ -394,7 +412,6 @@
     loginBtn.addEventListener("click", () => {
       const email = emailInput.value.trim();
       const password = passwordInput.value;
-
       signInWithEmailAndPassword(auth, email, password)
         .then(() => console.log("Logged in successfully"))
         .catch(error => {
