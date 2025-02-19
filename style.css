@@ -60,7 +60,7 @@
   .title {
     font-weight: 700;
     font-size: var(--title-font-size, 1.4rem);
-    color: var(--title-color, #785b31);
+    color: var(--title-color, #be8bce);
     margin-bottom: 25px;
   }
   
@@ -90,7 +90,7 @@
     border: 3px solid #ffd24b;
     border-radius: 10px;
     background-color: var(--input-bg-color, #fffdf200);
-    color: var(--input-text-color, #785b31);
+    color: var(--input-text-color, #000000);
     outline: none;
     transition: border-color 0.3s ease;
   }
@@ -116,7 +116,7 @@
   }
   
   button:hover {
-    background-color: #785b31;
+    background-color: #be8bce;
   }
   
   button:active {
@@ -133,7 +133,7 @@
   }
   
   .login-btn:hover {
-    background-color: #785b31;
+    background-color: #f3cdfe;
   }
   
   /* ===========================
@@ -149,7 +149,7 @@
   #tokenDisplay {
     font-size: 0.8rem;
     font-weight: 700;
-    color: #8e6c3b;
+    color: #be8bce;
     margin-bottom: 20px;
   }
   
@@ -185,7 +185,7 @@
   }
   
   .toggle-btn.closed {
-    background-color: #6a512e;
+    background-color: #be8bce;
   }
   
   .toggle-btn:hover {
@@ -202,7 +202,7 @@
     font-size: 0.85rem;
     font-weight: 600;
     color: #ffffff;
-    background-color: #6a512e;
+    background-color: #8a6595;
     border: none;
     border-radius: 20px;
     cursor: pointer;
@@ -213,7 +213,7 @@
   }
   
   #logoutBtn:hover {
-    background-color: #6a512e;
+    background-color: #64476d;
   }
   
   #logoutBtn:active {
