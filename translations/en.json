@@ -4,8 +4,6 @@
   "passwordPlaceholder": "Password",
   "registerBtn": "Register",
   "loginBtn": "Go",
-  "toggleDoor1": "Toggle Door 1",
-  "toggleDoor2": "Toggle Door 2",
   "logoutBtn": "Logout",
   "tokenLabel": "Your Token: ",
   "doorOpen": "Open",

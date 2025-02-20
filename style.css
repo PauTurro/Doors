@@ -24,8 +24,8 @@
      2. Body and Background
      =========================== */
   body {
-    background-color: var(--app-bg-color, #fffdf2);
-    color: var(--app-text-color, #5e4a4a);
+    background-color: var(--app-bg-color, #c181d4);
+    color: var(--app-text-color, #c181d4);
     width: 100%;
     min-height: 100vh;
   }
@@ -35,32 +35,43 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--app-bg-color, #fffdf2);
+    background-color: var(--app-bg-color, #ce88e3);
     width: 100%;
     min-height: 100vh;
   }
   
-  /* ===========================
-     3. Container (Default)
-     =========================== */
   .container {
+    position: relative; /* Establishes a stacking context */
+    z-index: 0;         /* Ensures children are above the pseudo-element */
     margin: 0 auto;
     text-align: center;
-    width: 90%;
+    width: 100%;
     max-width: 800px;
     padding: 30px;
-    background-color: var(--container-bg-color, #ffffff00);
-    border-radius: var(--container-border-radius, 30px);
-    box-shadow: 20px 20px 200px rgba(240, 194, 8, 0.539);
+    background-color: transparent; /* We'll use the pseudo-element for the background */
+    border-radius: var(--container-border-radius, 53px);
+    box-shadow: 0px 40px 100px #ffd24b6d;
+    overflow: hidden; /* Keep the pseudo-element from spilling outside */
   }
   
+  .container::before {
+    content: "";
+    position: absolute;
+    z-index: -1; /* Places the gradient behind the container's content */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Gradient: container color at the bottom fading to transparent at the top */
+    background: linear-gradient(to top, var(--container-bg-color, #d858ff), transparent);
+  }
   /* ===========================
      4. Title
      =========================== */
   .title {
-    font-weight: 700;
-    font-size: var(--title-font-size, 1.6rem);
-    color: var(--title-color, #a862be);
+    font-weight: 660;
+    font-size: var(--title-font-size, 2rem);
+    color: var(--title-color, #f2c6ff);
     margin-bottom: 25px;
   }
   
@@ -77,46 +88,81 @@
     margin-top: 20px;
   }
   
-  /* ===========================
+/* ===========================
      6. Input Fields
      =========================== */
-  input[type="email"],
-  input[type="password"] {
-    width: 250px;
-    max-width: 250px;
-    padding: 8px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    border: 3px solid #ffd24b;
-    border-radius: 10px;
-    background-color: var(--input-bg-color, #fffdf200);
-    color: var(--input-text-color, #000000);
-    outline: none;
-    transition: border-color 0.3s ease;
-  }
-  
-  input[type="email"]:focus,
-  input[type="password"]:focus {
-    border-color: #ffd24b;
-  }
+     input[type="email"],
+     input[type="password"] {
+       width: 250px;
+       max-width: 250px;
+       padding: 8px;
+       font-size: 0.9rem;
+       font-weight: 680;
+       border: 2.7px solid #ffd24b;
+       border-radius: 16px;
+       background-color: var(--input-bg-color, #fffdf200);
+       color: var(--input-text-color, #f9c836);
+       outline: none;
+       transition: border-color 0.3s ease;
+     }
+     
+     /* Style the placeholder text for modern browsers */
+     input[type="email"]::placeholder,
+     input[type="password"]::placeholder {
+       color: var(--input-text-color, #f9c836);
+     }
+     
+     /* For older browsers using vendor prefixes */
+     input[type="email"]::-webkit-input-placeholder,
+     input[type="password"]::-webkit-input-placeholder {
+       color: var(--input-text-color, #ffd042);
+     }
+     
+     input[type="email"]:-ms-input-placeholder,
+     input[type="password"]:-ms-input-placeholder {
+       color: var(--input-text-color, #f9c836);
+     }
+     
+     input[type="email"]:focus,
+     input[type="password"]:focus {
+       border-color: #f9c836;
+     }
+
+
+/* ===========================
+   Autofill Styling for Webkit Browsers (Hard-Coded Colors)
+   =========================== */
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus,
+      input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 1000px #c181d4 inset !important;
+        -webkit-text-fill-color: #c181d4 !important;
+        color: #c181d4 !important;
+        caret-color: #c181d4 !important;
+        background-clip: padding-box !important;
+     }
+   
   
   /* ===========================
      7. Buttons (General)
      =========================== */
-  button {
-    padding: 8px 12px;
-    font-size: 0.9rem;
-    font-weight: 650;
-    color: #ffffff;
-    background-color: #f9c836;
-    border: none;
-    border-radius: 17px;
-    cursor: pointer;
-    transition: background-color 0.45s ease, transform 0.2s ease;
-  }
+     button {
+      display: inline-block; /* Ensures the button sizes to its content */
+      padding: 8px 11px 8px 11px; /* top, right, bottom, left */
+      font-size: 1.1rem;
+      font-weight: 650;
+      color: #ffffff;
+      background-color: #f9c836;
+      border: none;
+      border-radius: 19px;
+      cursor: pointer;
+      transition: background-color 0.4s ease, transform 1s ease;
+    }
+    
   
   button:hover {
-    background-color: #b980ca;
+    background-color: #ad56c8;
   }
   
   button:active {
@@ -132,7 +178,7 @@
   }
   
   .login-btn:hover {
-    background-color: #b980ca;
+    background-color: #ad56c8;
   }
   
   /* ===========================
@@ -148,10 +194,10 @@
      =========================== */
   /* ID: tokenDisplay - Displays the user token information; customize for text size, color, etc. */
   #tokenDisplay {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: 700;
-    color: #a070af;
-    margin-bottom: 20px;
+    color: #8a6595;
+    margin-top: 20px;
   }
   
   /* ===========================
@@ -162,7 +208,7 @@
     flex-direction: column;
     gap: 15px;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 15px;
   }
   
   /* ===========================
@@ -171,23 +217,23 @@
   .toggle-btn {
     width: 180px;
     height: 70px;
-    font-size: 25px;
+    font-size: 27px;
     font-weight: 620;
     color: #ffffff;
-    border-radius: 25px;
+    border-radius: 28px;
     cursor: pointer;
     transition: background-color 0.8s ease, transform 0.2s ease;
     background-color: rgba(255, 207, 95, 0.7);
   }
   
   .toggle-btn.open {
-    background-color: #ffd84d;
-    border: 3px solid #ffb938;
+    background-color: #ffd94f;
+    border: 3.5px solid #ecaa31;
   }
   
   .toggle-btn.closed {
     background-color: #be8bce;
-    border: 3px solid #82598f;
+    border: 3.5px solid #885c95;
   }
   
   .toggle-btn:hover {
@@ -199,15 +245,15 @@
      =========================== */
   /* ID: logoutBtn - Logout button element with hover and active animations */
   #logoutBtn {
-    margin-top: 30px;
+    margin-top: 120px;
     width: 100px;
     height: 50px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 0.9rem;
+    font-weight: 650;
     color: #ffffff;
     background-color: #8a6595;
     border: none;
-    border-radius: 20px;
+    border-radius: 21px;
     cursor: pointer;
     display: block;
     margin-left: auto;
@@ -248,7 +294,6 @@
       margin: 0 auto;
       padding: 20px;
       border-radius: 15px;
-      box-shadow: none; /* Remove shadow if desired */
       position: static !important;
       overflow: hidden; /* Prevent overflow scroll */
     }
@@ -327,7 +372,7 @@
   
   /* Title fade-in */
   .title {
-    animation: fadeInTitle 2.5s ease forwards;
+    animation: fadeInTitle 1.5s ease forwards;
     opacity: 0;
     transform: translateY(-10px);
   }
@@ -351,9 +396,9 @@
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active {
-    -webkit-text-fill-color: #785b31 !important;
-    -webkit-box-shadow: 0 0 0 30px #fffdf2 inset !important;
-    box-shadow: 0 0 0 30px #fffdf2 inset !important;
+    -webkit-text-fill-color: #ffd65c !important;
+    -webkit-box-shadow: 0 0 0 30px #fffdf200 inset !important;
+    box-shadow: 0 0 0 30px #fffdf200 inset !important;
     transition: background-color 5000s ease-in-out 0s;
   }
   
@@ -381,7 +426,7 @@
     }
     .container {
       background-color: transparent !important;
-      box-shadow: none !important;
+
       border: none !important;
       visibility: visible !important;
       opacity: 1 !important;
@@ -453,22 +498,6 @@
     animation: fadeInSlower 1.4s ease 0.2s forwards; /* 1.4s, starts at 0.2s */
   }
   
-  /* ============================================================
-     Custom Mobile Personalization Section
-     ------------------------------------------------------------
-     Use the following custom properties to personalize the 
-     phone screen version:
-       --mobile-button-padding       : Button padding
-       --mobile-button-font-size     : Button font size
-       --mobile-button-border-radius : Button border radius
-       --mobile-button-margin        : Button margin
-       --mobile-token-font-size      : Token display font size
-       --mobile-token-text-color     : Token text color
-       --mobile-token-margin         : Token margin
-       --mobile-container-padding    : Container padding
-       --mobile-container-border-radius : Container border radius
-     Adjust these values as needed for your design.
-  ============================================================ */
   @media screen and (max-width: 600px) {
     /* Custom button styles for mobile */
     button,

@@ -1,0 +1,11 @@
+{
+  "welcomeTitle": "Bienvenue dans le futur",
+  "emailPlaceholder": "Email",
+  "passwordPlaceholder": "Mot de passe",
+  "registerBtn": "Inscrire",
+  "loginBtn": "Entrer",
+  "logoutBtn": "Sortir",
+  "tokenLabel": "Votre Token:",
+  "doorOpen": "Ouvert",
+  "doorClosed": "Fermé"
+}
